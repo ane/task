@@ -2,10 +2,7 @@
 
 Simple and functional concurrency primitives for Clojure. 
 
-* [User Guide](./)
-* [API Documentation](./)
-
-### Key features
+## Key features
 
   * **Value-oriented**: tasks are just eventual values. No more callbacks, regular `deref`/`@` is all you need. 
   * **Functional**: tasks are composable. Tasks come with a set of operations that lets you compose
@@ -18,11 +15,11 @@ Simple and functional concurrency primitives for Clojure.
   * **Performant**. Tasks leverage the standard [Java 8 Concurrency
     API](https://docs.oracle.com/javase/8/docs/technotes/guides/concurrency/changes8.html). 
 
-### Examples
+## Examples
 
 The task API is built on basic building blocks, `run`, `then`, `compose` and `for`.
 
-#### `run` - Compute some value asynchronously
+### `run` - Compute some value asynchronously
 
 Use the standard `deref`/`@` to block the current thread and await the result.
 
@@ -32,7 +29,7 @@ Use the standard `deref`/`@` to block the current thread and await the result.
 @(my-var) ; => 123
 ```
 
-#### `then` - Apply a function to some asynchronous value
+### `then` - Apply a function to some asynchronous value
 
 `then` applies a function to the result of another task.
 
@@ -44,7 +41,7 @@ Use the standard `deref`/`@` to block the current thread and await the result.
 ; => "ASDF"
 ```
 
-#### `compose` - Compose two asynchronous computations
+### `compose` - Compose two asynchronous computations
 
 `compose` applies a function producing a task on the result of a a task, and chains their execution together.
 
@@ -61,7 +58,7 @@ Use the standard `deref`/`@` to block the current thread and await the result.
 ; => 10
 ```
 
-#### `for` - Compose tasks without the boilerplate
+### `for` - Compose tasks without the boilerplate
 
 `for` lets you apply `compose` and `then` without the boilerplate. It behaves like `let`, it binds
 the symbols in the bindings to futures. Once all futures are complete, it evaluates the body.
@@ -76,7 +73,7 @@ the symbols in the bindings to futures. Once all futures are complete, it evalua
 ; => 10
 ```
 
-#### A concrete example: do a HTTP request asynchronously and operate on its results
+### A concrete example: do a HTTP request asynchronously and operate on its results
 
 ``` clojure
 (ns my-program.core
