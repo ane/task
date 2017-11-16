@@ -137,7 +137,7 @@ To get a value anyway if the task isn't complete, use ``else``::
 .. _force:
 
 Forcing a result
-~~~~~~~~~~~~~~~~
+----------------
 
 To force the result of a task, completed or not, use ``force!``::
 
