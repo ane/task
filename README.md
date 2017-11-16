@@ -10,10 +10,12 @@ Simple and functional concurrency primitives for Clojure.
   * **Interoperable**: Any Clojure `future`/`promise` can be converted into a task, and vice versa.
   * **Asynchronous**: tasks are always asynchronous. Tasks default to the
     [ForkJoinPool](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ForkJoinPool.html?is-external=true)
-    executor. Alternatively, you can define your own
+    executor. 
+  * **Customizable**: If you wish to control the execution model, you can define your own
     [ExecutorService](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html).
-  * **Performant**. Tasks leverage the standard [Java 8 Concurrency
-    API](https://docs.oracle.com/javase/8/docs/technotes/guides/concurrency/changes8.html). 
+  * **Performant**: The library leverages the standard [Java 8 Concurrency
+    API](https://docs.oracle.com/javase/8/docs/technotes/guides/concurrency/changes8.html), a
+    powerful framework for concurrent computation.
 
 ## Examples
 
@@ -46,11 +48,11 @@ Use the standard `deref`/`@` to block the current thread and await the result.
 `compose` applies a function producing a task on the result of a a task, and chains their execution together.
 
 ``` clojure
-(def comp1 [x] 
+(defn comp1 [x] 
   (run (Thread/sleep 1000)
        (inc x)))
 
-(def comp2 [x]
+(defn comp2 [x]
   (run (Thread/sleep 1000)
        (* 2 x)))
        

@@ -1,11 +1,11 @@
 (ns task.core
-  (:refer-clojure :exclude [for sequence] :as core)
-  (:import [java.util.concurrent CompletableFuture ForkJoinPool TimeoutException TimeUnit]))
+  (:refer-clojure :exclude [for sequence or] :as core)
+  (:import [java.util.concurrent CompletableFuture ExecutionException ForkJoinPool TimeoutException TimeUnit]))
 
 (defprotocol Task
   (task->future [this] "convert self into CompletableFuture"))
 
-(defn- future->task
+(defn future->task
   [^CompletableFuture fut]
   (reify
     Task
@@ -25,12 +25,12 @@
     (cancel [_ interrupt] (.cancel fut interrupt))))
 
 
-(defn- supplier
+(defn supplier
   [func]
   (reify java.util.function.Supplier
     (get [this] (func))))
 
-(defn- function
+(defn function
   [func]
   (reify java.util.function.Function
     (apply [this t] (func t))
@@ -39,7 +39,7 @@
     (compose [this before]
       (function #(.apply this (.apply before %1))))))
 
-(defn- fn->future
+(defn fn->future
   [func & [executor]]
   (CompletableFuture/supplyAsync (supplier func) (or executor (ForkJoinPool/commonPool))))
 
@@ -56,6 +56,11 @@
   "Create a task that completes immediately with `value`."
   [value]
   (future->task (CompletableFuture/completedFuture value)))
+
+(defn done?
+  "Has the task completed in any fashion?"
+  [task]
+  (.isDone (task->future task)))
 
 (defn- ensure-task
   [obj]
@@ -75,19 +80,36 @@
 (def common-pool (ForkJoinPool/commonPool))
 
 (defn then
-  "Apply a function to the result of `task`.
+  "Apply a function to the result of `task`. Returns a new task.
 
-  Applies `func` to the result of `task`, returns a new task. Optionally, with a third argument
-  `executor`, run the task in that [[java.util.concurrent.ExecutorService ExecutorService]]."
-  [func task & [executor]]
-  (future->task (.thenApplyAsync ((comp task->future ensure-task) task) (function func)
-                                 (or executor common-pool))))
+  With one argument, creates a function that accepts a task, and applies `func` on that task.
+  
+  With two arguments, applies `func` to `task`.
+
+  Optionally, with a third argument `executor`, run the task in
+  that [[java.util.concurrent.ExecutorService ExecutorService]]."
+  ([func] (fn [task] (then func task)))
+  ([func task] (then func task common-pool))
+  ([func task executor]
+   (future->task (.thenApplyAsync ((comp task->future ensure-task) task) (function func)
+                                  (or executor common-pool)))))
 
 (defn compose
   "Chain two tasks together. Applies `func`, which is a function returning a task,
-to the result of `task`. This returns a new task. Should be used when the function
-  to [[then]] returns a task, which would result in a task inside a task. Given an executor, use that."
-  ([func task & [executor]]
+  to the result of `task`. This returns a new task.
+
+  compose is useful when the function that you want to apply on the task returns a new task.
+  This would result in a task inside a task, so you would need to double deref it. So, `compose`
+  solves this for you.
+
+  With one argument, create a function that accepts a task. With two args, apply `func` to
+  `task` directly.
+
+  Should be used when the function to [[then]] returns a task, which would
+  otherwise result in a task inside a task. Given an executor, use that."
+  ([func] (fn [task] (compose func task common-pool)))
+  ([func task] (compose func task common-pool))
+  ([func task executor]
    (future->task (.thenComposeAsync ((comp task->future ensure-task) task)
                                     (function (comp task->future ensure-task func))
                                     (or executor common-pool)))))
@@ -131,6 +153,12 @@ to the result of `task`. This returns a new task. Should be used when the functi
   [task]
   (future-cancelled? task))
 
+
+(defn void
+  "Create an incomplete task with nothing in it."
+  []
+  (future->task (CompletableFuture.)))
+
 (defn sequence
   "Turn a sequence of tasks into a task of a sequence. Returns a new task returning a vector
   of all the results of each task. The task evaluates when all the tasks evaluate."
@@ -141,3 +169,53 @@ to the result of `task`. This returns a new task. Should be used when the functi
               (conj r a)))
           (now [])
           tasks))
+
+(defn complete!
+  "Complete the task with some value if it hasn't completed already."
+  [task value]
+  (.complete (task->future task) value))
+
+(defn failed
+  "Create a new task that fails with `t`."
+  [^java.lang.Throwable t]
+  (let [task (void)]
+    (.completeExceptionally (task->future task) t)
+    task))
+
+(defn failed?
+  "Did the task complete with an exception of any kind?"
+  [task]
+  (.isCompletedExceptionally (task->future task)))
+
+(defn failure
+  "Get the exception with which the task completed exceptionally, if any."
+  [task]
+  (when (failed? task)
+    (let [fail (try @task (catch Exception e e))]
+      (or (.getCause fail) fail))))
+
+(defn else
+  "Get the value of `task` if it's complete, otherwise return
+  `value`."
+  [task value] (.getNow (task->future task) value))
+
+(defn fail!
+  "Force the value of task to fail with `t` whether or not already completed."
+  [task ^java.lang.Throwable t]
+  (.obtrudeException (task->future task) t))
+
+(defn force!
+  "Force the value of task to return `value` whether or not already completed."
+  [task value]
+  (.obtrudeValue (task->future task) value))
+
+(defn recover
+  "Recover possible failures in `task`. Returns a new task. This task evaluates to
+  two possible values:
+
+  * If the task completes with an exception, this exception is passed to `func`, and the task
+  evaluates to its result.
+  * If the task completes normally, the task will evaluate to that result."
+  [task func]
+  (let [jf (task->future task)]
+    (future->task (.exceptionally jf (function func)))))
