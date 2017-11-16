@@ -138,7 +138,6 @@ to the result of `task`. This returns a new task. Should be used when the functi
   (reduce (fn [fr fa]
             (for [r fr
                   a fa]
-              (println r)
               (conj r a)))
           (now [])
           tasks))

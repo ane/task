@@ -1,14 +1,99 @@
 # task
 
-A Clojure library designed to ... well, that part is up to you.
+Simple and functional concurrency primitives for Clojure. 
 
-## Usage
+## Key features
 
-FIXME
+  * **Value-oriented**: tasks are just eventual values. No more callbacks, regular `deref`/`@` is all you need. 
+  * **Functional**: tasks are composable. Tasks come with a set of operations that lets you compose
+    and combine them in a functional manner.
+  * **Interoperable**: Any Clojure `future`/`promise` can be converted into a task, and vice versa.
+  * **Asynchronous**: tasks are always asynchronous. Tasks default to the
+    [ForkJoinPool](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ForkJoinPool.html?is-external=true)
+    executor. Alternatively, you can define your own
+    [ExecutorService](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html).
+  * **Performant**. Tasks leverage the standard [Java 8 Concurrency
+    API](https://docs.oracle.com/javase/8/docs/technotes/guides/concurrency/changes8.html). 
+
+## Examples
+
+The task API is built on basic building blocks, `run`, `then`, `compose` and `for`.
+
+### `run` - Compute some value asynchronously
+
+Use the standard `deref`/`@` to block the current thread and await the result.
+
+``` clojure
+(def my-var (run 123))
+
+@(my-var) ; => 123
+```
+
+### `then` - Apply a function to some asynchronous value
+
+`then` applies a function to the result of another task.
+
+``` clojure
+(def async-var (run (Thread/sleep 1000)
+                    "asdf"))
+                    
+@(then str/upper-case async-var)
+```
+
+### `compose` - Compose two asynchronous computations
+
+`compose` applies a function producing a task on the result of a a task, and chains their execution together.
+
+``` clojure
+(def comp1 [x] 
+  (run (Thread/sleep 1000)
+       (inc x)))
+
+(def comp2 [x]
+  (run (Thread/sleep 1000)
+       (* 2 x)))
+       
+@(compose comp2 (comp1 4))
+; => 10
+```
+
+### `for` - Do a HTTP request asynchronously and operate on its results
+
+`for` lets you apply `compose` and `then` without the boilerplate.
+
+``` clojure
+(ns my-program.core
+  (:require [org.httpkit.client :as http]
+            [task.core :as task]
+            [cheshire.core :as cheshire]))
+            
+; do a request - http-kit calls return promises, these are converted into tasks.
+(defn do-http-request-async
+   [data]
+   (task/then (http/post "http://host.com/api" (cheshire/generate-string data))
+              (comp :result cheshire/parse-string)))
+
+; compute something expensive
+(defn compute-result
+   [v]
+   (task/run (Thread/sleep 1000)
+             (* v 1000)))
+
+; combine tasks
+(defn request-and-compute
+   [data]
+   (task/for [response (do-http-request-async data)
+              computed (compute-result response)
+              blah (future 100)] ; interop!
+              (+ 100 computed blah)))
+
+; blocks until it's ready
+@(request-and-compute {:some-value 1})
+```
 
 ## License
 
-Copyright © 2017 FIXME
+Copyright © 2017 Antoine Kalmbach. All rights reserved.
 
-Distributed under the Eclipse Public License either version 1.0 or (at
+Distributed under the [Apache License either version 2.0 or (at
 your option) any later version.
