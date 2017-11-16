@@ -1,10 +1,11 @@
-User guide
-==========
+============
+ User guide
+============
 
 .. highlight:: clojure
 
 Creating tasks
---------------
+==============
 
 To create a task, use ``run``. It is a macro that evaluates its result in another thread. The
 execution is done in the ``ForkJoinPool.commonPool()``::
@@ -32,10 +33,10 @@ If you want to use another executor, use ``run-in``::
       123)
 
 Composing tasks
----------------
+===============
 
 Applying functions
-~~~~~~~~~~~~~~~~~~
+------------------
 
 If you want to apply a function on the value returned by a task, use ``then``::
 
@@ -56,7 +57,7 @@ If you had used ``then`` the result would have been a task inside another task.
 .. _interoperability:
 
 Interoperability
-~~~~~~~~~~~~~~~~
+----------------
 
 Standard Clojure ``future`` and ``promise`` are compatible with tasks::
 
@@ -71,7 +72,7 @@ Standard Clojure ``future`` and ``promise`` are compatible with tasks::
   ; prints "hello"
 
 Using executors
-+++++++++++++++
+~~~~~~~~~~~~~~~
 
 Both ``then`` and ``compose`` accept a third parameter as the `ExecutorService`_:::
 
@@ -81,7 +82,7 @@ Both ``then`` and ``compose`` accept a third parameter as the `ExecutorService`_
 .. _ExecutorService: https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html
 
 Using ``for`` to avoid boilerplate
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------------
 
 The ``for`` macro, like its standard library namesake, lets you skip some boilerplate when working
 with tasks that depend on each other::
@@ -95,7 +96,7 @@ with tasks that depend on each other::
 their respective bindings.
 
 Lists of tasks
-~~~~~~~~~~~~~~
+--------------
 
 If you have a sequence of futures, and you want to deal with each result as a whole, you can turn
 a sequence of tasks into a task that evaluates into the values of each task inside it::
@@ -106,7 +107,7 @@ a sequence of tasks into a task that evaluates into the values of each task insi
 
 
 Completion
-----------
+==========
 
 To check if a task is complete, use ``done?``::
 
@@ -136,7 +137,7 @@ To get a value anyway if the task isn't complete, use ``else``::
 .. _force:
 
 Forcing a result
-++++++++++++++++
+~~~~~~~~~~~~~~~~
 
 To force the result of a task, completed or not, use ``force!``::
 
@@ -149,7 +150,7 @@ To force the result of a task, completed or not, use ``force!``::
 .. _cancellation:
 
 Cancellation
-------------
+============
 
 To cancel a task, use ``cancel``::
 
@@ -164,7 +165,7 @@ To see if the task was cancelled, use ``cancelled?``::
 Using ``deref`` on a cancelled task blows up, predictably.
 
 Failures
---------
+========
 
 A task is said to have *failed* if its evaluation produced an exception or it produced an exception
 during its execution. Such a task is a cancelled task (see :ref:`cancellation`), or any task that
@@ -201,7 +202,7 @@ To force a task to fail, like :ref:`force! <force>`, use ``fail!``::
 Chaining a failed task to a normal task will cause the resulting task to fail.
 
 Recovering from errors
-----------------------
+======================
 
 To recover from errors, use ``recover``::
 
