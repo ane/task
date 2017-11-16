@@ -1,5 +1,5 @@
 (ns task.core
-  (:refer-clojure :exclude [for sequence or] :as core)
+  (:refer-clojure :exclude [for sequence] :as core)
   (:import [java.util.concurrent CompletableFuture ExecutionException ForkJoinPool TimeoutException TimeUnit]))
 
 (defprotocol Task
