@@ -59,7 +59,8 @@ Use the standard `deref`/`@` to block the current thread and await the result.
 
 ### `for` - Do a HTTP request asynchronously and operate on its results
 
-`for` lets you apply `compose` and `then` without the boilerplate.
+`for` lets you apply `compose` and `then` without the boilerplate. It behaves like `let`, it binds
+the symbols in the bindings to futures. Once all futures are complete, it evaluates the body.
 
 ``` clojure
 (ns my-program.core
@@ -69,23 +70,24 @@ Use the standard `deref`/`@` to block the current thread and await the result.
             
 ; do a request - http-kit calls return promises, these are converted into tasks.
 (defn do-http-request-async
-   [data]
-   (task/then (http/post "http://host.com/api" (cheshire/generate-string data))
+  [data]
+  (task/then (http/post "http://host.com/api" (cheshire/generate-string data))
               (comp :result cheshire/parse-string)))
 
 ; compute something expensive
 (defn compute-result
-   [v]
-   (task/run (Thread/sleep 1000)
+  [v]
+  (task/run (Thread/sleep 1000)
              (* v 1000)))
 
 ; combine tasks
 (defn request-and-compute
-   [data]
-   (task/for [response (do-http-request-async data)
-              computed (compute-result response)
-              blah (future 100)] ; interop!
-              (+ 100 computed blah)))
+  [data]
+  (task/for [response  (do-http-request-async data)
+             computed  (compute-result response)
+             blah      (future 100)] ; interop!
+
+    (+ 100 computed blah)))
 
 ; blocks until it's ready
 @(request-and-compute {:some-value 1})
@@ -95,5 +97,5 @@ Use the standard `deref`/`@` to block the current thread and await the result.
 
 Copyright © 2017 Antoine Kalmbach. All rights reserved.
 
-Distributed under the [Apache License either version 2.0 or (at
+Distributed under the [Apache License](https://www.apache.org/licenses/LICENSE-2.0) either version 2.0 or (at
 your option) any later version.
