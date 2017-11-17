@@ -5,4 +5,6 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]]
   :source-paths ["src/main/clj"]
-  :test-paths ["src/test/clj"])
+  :test-paths ["src/test/clj"]
+  :plugins [[test2junit "1.1.2"]]
+  :test2junit-output-dir ~(or (System/getenv "CIRCLE_TEST_REPORTS") "target/test2junit"))
