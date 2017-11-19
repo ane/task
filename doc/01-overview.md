@@ -2,7 +2,7 @@
 
 Tasks provide simple and functional concurrency primitives for Clojure. Tasks represent asynchronous
 computation as *pure values*, and favours function composition over
-[callbacks](https://en.wikipedia.org/wiki/Callback_(computer_programming)) or promises.
+[callbacks](https://en.wikipedia.org/wiki/Callback_\(computer_programming\)) or promises.
 
 Task promotes the use of combinators like [[then]] and [[compose]] to create intuitive and
 referentially transparent pipelines.
