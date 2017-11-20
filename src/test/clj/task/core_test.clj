@@ -36,29 +36,29 @@
 
 (deftest then-tests
   (testing "basic application"
-    (is (= 2 @(task/then inc (now 1)))))
+    (is (= 2 @(task/then inc (task/now 1)))))
 
   (testing "comp works"
-    (is (= 3 @(task/then (comp inc inc) (now 1))))))
+    (is (= 3 @(task/then (comp inc inc) (task/now 1))))))
 
 (deftest compose-tests
   (testing "basic application"
-    (is (= 2 @(task/compose #(task/run (inc %)) (now 1))))))
+    (is (= 2 @(task/compose #(task/run (inc %)) (task/now 1))))))
 
 (deftest for-tests
   (testing "for works"
     (is (= 11 @(task/for [a (future 1)
-                     b (task/now 3)
-                     c (task/run 7)]
+                          b (task/now 3)
+                          c (task/run 7)]
                  (+ a b c))))))
 
 (deftest sequence-tests
   (testing "sequence works"
-    (is (= [1 2 3] @(task/sequence [(task/run 1) (now 2) (future 3)])))))
+    (is (= [1 2 3] @(task/sequence [(task/run 1) (task/now 2) (future 3)])))))
 
 (deftest complete-tests
   (testing "complete! completes"
-    (let [task (run (Thread/sleep 2000) 9)]
+    (let [task (task/run (Thread/sleep 2000) 9)]
       (task/complete! task "bla")
       (is (= "bla" @task))))
   (testing "complete! doesn't override a ready task"
@@ -77,7 +77,7 @@
     (is (task/failed? (task/failed (IllegalStateException. "asdf")))))
   (testing "failure works"
     (is (instance? RuntimeException (task/failure (task/failed (RuntimeException. "foo")))))
-    (is (= nil (task/failure (now 1)))))
+    (is (= nil (task/failure (task/now 1)))))
   (testing "fail! works"
     (let [ff (task/failed (RuntimeException. "bork"))]
       (task/fail! ff (IllegalStateException. "bad state"))

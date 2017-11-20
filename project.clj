@@ -14,5 +14,5 @@
   :codox {:output-path "docs"
           :themes [:default :kingfisher]
 	  :metadata {:doc/format :markdown}
-          :source-uri "https://github.com/ane/task/blob/master/{filepath}#{line}"}
+          :source-uri "https://github.com/ane/task/blob/master/{filepath}#L{line}"}
   :test2junit-output-dir ~(or (System/getenv "CIRCLE_TEST_REPORTS") "target/test2junit"))
