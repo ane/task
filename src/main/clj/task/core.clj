@@ -44,12 +44,12 @@
   (CompletableFuture/supplyAsync (supplier func) (or executor (ForkJoinPool/commonPool))))
 
 (defmacro run
-  "Execute `body` inside the default [[java.util.concurrent.ForkJoinPool ForkJoinPool]]
+  "Execute `body` inside the default [ForkJoinPool](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ForkJoinPool.html)
   executor."
   ([& body] `(future->task (fn->future (fn [] ~@body)))))
 
 (defmacro run-in
-  "Execute `body` inside the supplied [[java.util.concurrent.ExecutorService ExecutorService]]."
+  "Execute `body` inside the supplied [ExecutorServce](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ExecutorService.html)."
   ([executor & body] `(future->task (fn->future (fn [] ~@body)) ~executor)))
 
 (defn now
@@ -87,7 +87,7 @@
   With two arguments, applies `func` to `task`.
 
   Optionally, with a third argument `executor`, run the task in
-  that [[java.util.concurrent.ExecutorService ExecutorService]]."
+  that [ExecutorService](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ForkJoinPool.html)."
   ([func] (fn [task] (then func task)))
   ([func task] (then func task common-pool))
   ([func task executor]
