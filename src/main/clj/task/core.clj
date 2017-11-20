@@ -116,7 +116,10 @@ or explicitly using an additional parameter.
   (CompletableFuture/supplyAsync (fn->Supplier func) (or executor *pool*)))
 
 (defmacro run
-  "Create a task. Runs `body` according to the execution model. This *may* mean running in another thread.
+  "Create a task. Runs `body` according to the execution model. Produces a [[Task]] that evaluates
+to the result of `body`.
+
+  This *may* mean running in another thread.
   The default behaviour is the executor bound to [[*pool*]] which `body` inside
   the [ForkJoinPool](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ForkJoinPool.html)
   executor."
