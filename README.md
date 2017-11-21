@@ -1,6 +1,9 @@
 # task [![CircleCI](https://circleci.com/gh/ane/task/tree/master.svg?style=svg&circle-token=e18d6f0c73c42d24828e306f6c7de1fc639cbddd)](https://circleci.com/gh/ane/task/tree/master)
 
-Simple and functional concurrency primitives for Clojure. 
+Simple, functional and value-oriented concurrency primitives for Clojure. 
+
+  * [API Documentation](https://ane.github.io/task)
+  * [User Guide](https://ane.github.io/task/02-guide.html)
 
 ## Key features
 
