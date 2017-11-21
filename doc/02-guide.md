@@ -4,8 +4,9 @@ This is the official Task user guide.
 
 ## Creating tasks
 
-To create a task, use [[run]]. It is a macro that evaluates its result in another thread. The
-execution is done in the `ForkJoinPool.commonPool()`:
+To create a task, use [[run]]. It evaluates its result asynchronously. It behaves more or less like
+[do](http://clojuredocs.org/clojure.core/do) except that it, depending on the [execution model](https://ane.github.io/task/03-executors.html),
+may evaluate its result in another thread.
 
 ```clojure
 (task/run (println "hello")
@@ -13,15 +14,16 @@ execution is done in the `ForkJoinPool.commonPool()`:
           123)
 ```
 
+This task evaluates to 123. We can get it value by `deref`ing it.
 
 To get the value of the task, use ``deref`` or ``@`` from the Clojure standard library. This blocks
 the current thread.
 
 ```clojure
-; these are all equal
+; these are both equal
 @(task/run 123) ; => 123
 
-(deref (task/run 123))
+(deref (task/run 123)) ; => 123
 ```
 
 *See the docs on [deref](http://clojuredocs.org/clojure.core/deref).*
