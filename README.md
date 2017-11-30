@@ -1,4 +1,4 @@
-# task [![CircleCI](https://circleci.com/gh/ane/task/tree/master.svg?style=svg&circle-token=e18d6f0c73c42d24828e306f6c7de1fc639cbddd)](https://circleci.com/gh/ane/task/tree/master)
+# task [![CircleCI](https://circleci.com/gh/ane/task/tree/master.svg?style=svg&circle-token=e18d6f0c73c42d24828e306f6c7de1fc639cbddd)](https://circleci.com/gh/ane/task/tree/master) [![Clojars Project](https://img.shields.io/clojars/v/com.github.ane/task.svg)](https://clojars.org/com.github.ane/task)
 
 Simple and functional concurrency primitives for Clojure. 
 

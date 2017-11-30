@@ -11,3 +11,5 @@ pom.xml.asc
 .hg/
 docs/build
 build.xml
+.idea
+task.iml
