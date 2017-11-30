@@ -5,22 +5,28 @@
 
   For task combinators, see [[then]], [[compose]], [[for]] and [[sequence]].
 
-  To use custom executors, you have either two options:
+  To use custom executors, you have either two options: implicitly via dynamic binding,
+or explicitly using an additional parameter.
 
-  * use the explicit versions of the combinators. The explicit versions have `-in` appended to their names.
+
+  By default, the executor is bound to the variable [[*pool*]]. This can be re-bound dynamically
+  like this:
+
+```clojure
+(binding [*pool* (Executors/newFixedThreadPool 4)]
+  @(then inc (task/run 1234)))
+```
+
+  By default, `*pool*` is bound to [[common-pool]].
+
+  Otherwise, you can use the parameter versions. The explicit versions have `-in` appended to their names.
     * [[run]] and [[run-in]]
     * [[then]] and [[then-in]]
     * [[compose]] and [[compose-in]]
     * [[for]] and [[for-in]]
     * [[sequence]] and [[sequence-in]]
-  * rebind the [[*pool*]] var using [binding](http://clojuredocs.org/clojure.core/binding) like so:
 
-  ```
-  (binding [*pool* (Executors/newFixedThreadPool 4)]
-    @(then inc (task/run 1234)))
-  ```
-
-  By default, `*pool*` is bound to [[common-pool]].
+  For more information see the documentation about the [execution model](./03-executors.md).
   "
   (:refer-clojure :exclude [for sequence] :as core)
   (:import [java.util.concurrent CompletableFuture Executor ForkJoinPool TimeoutException TimeUnit]))
@@ -110,7 +116,10 @@
   (CompletableFuture/supplyAsync (fn->Supplier func) (or executor *pool*)))
 
 (defmacro run
-  "Create a task. Runs `body` according to the execution model. This *may* mean running in another thread.
+  "Create a task. Runs `body` according to the execution model. Produces a [[Task]] that evaluates
+to the result of `body`.
+
+  This *may* mean running in another thread.
   The default behaviour is the executor bound to [[*pool*]] which `body` inside
   the [ForkJoinPool](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ForkJoinPool.html)
   executor."
@@ -118,7 +127,7 @@
 
 (defmacro run-in
   "Execute `body` inside the supplied [ExecutorServce](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ExecutorService.html)."
-  ([executor & body] `(future->task (fn->future (fn [] ~@body)) ~executor)))
+  ([executor & body] `(future->task (fn->future (fn [] ~@body) ~executor))))
 
 (defn- ensure-task
   [obj]

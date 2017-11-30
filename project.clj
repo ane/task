@@ -13,6 +13,6 @@
             [lein-codox "0.10.3"]]
   :codox {:output-path "docs"
           :themes [:default :kingfisher]
-	  :metadata {:doc/format :markdown}
+          :metadata {:doc/format :markdown}
           :source-uri "https://github.com/ane/task/blob/master/{filepath}#L{line}"}
   :test2junit-output-dir ~(or (System/getenv "CIRCLE_TEST_REPORTS") "target/test2junit"))
