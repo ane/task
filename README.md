@@ -2,8 +2,8 @@
 
 Simple, functional and value-oriented concurrency primitives for Clojure. 
 
-  * [API Documentation](https://ane.github.io/task)
-  * [User Guide](https://ane.github.io/task/02-guide.html)
+  * [API Documentation](https://ane.github.io/task/api/)
+  * [User Guide](https://ane.github.io/task/)
 
 ```clojure
 [com.github.ane/task "0.1.0-SNAPSHOT"]

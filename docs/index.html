@@ -417,12 +417,84 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 .hide-for-print{display:none!important}
 .show-for-print{display:inherit!important}}
 </style>
+<style>
+.listingblock .pygments .hll { background-color: #ffffcc }
+.listingblock .pygments  { background: #f8f8f8; }
+.listingblock .pygments .tok-c { color: #408080; font-style: italic } /* Comment */
+.listingblock .pygments .tok-err { border: 1px solid #FF0000 } /* Error */
+.listingblock .pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
+.listingblock .pygments .tok-o { color: #666666 } /* Operator */
+.listingblock .pygments .tok-ch { color: #408080; font-style: italic } /* Comment.Hashbang */
+.listingblock .pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.listingblock .pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
+.listingblock .pygments .tok-cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
+.listingblock .pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
+.listingblock .pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
+.listingblock .pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
+.listingblock .pygments .tok-ge { font-style: italic } /* Generic.Emph */
+.listingblock .pygments .tok-gr { color: #FF0000 } /* Generic.Error */
+.listingblock .pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.listingblock .pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
+.listingblock .pygments .tok-go { color: #888888 } /* Generic.Output */
+.listingblock .pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.listingblock .pygments .tok-gs { font-weight: bold } /* Generic.Strong */
+.listingblock .pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.listingblock .pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
+.listingblock .pygments .tok-kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.listingblock .pygments .tok-kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.listingblock .pygments .tok-kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.listingblock .pygments .tok-kp { color: #008000 } /* Keyword.Pseudo */
+.listingblock .pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.listingblock .pygments .tok-kt { color: #B00040 } /* Keyword.Type */
+.listingblock .pygments .tok-m { color: #666666 } /* Literal.Number */
+.listingblock .pygments .tok-s { color: #BA2121 } /* Literal.String */
+.listingblock .pygments .tok-na { color: #7D9029 } /* Name.Attribute */
+.listingblock .pygments .tok-nb { color: #008000 } /* Name.Builtin */
+.listingblock .pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.listingblock .pygments .tok-no { color: #880000 } /* Name.Constant */
+.listingblock .pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
+.listingblock .pygments .tok-ni { color: #999999; font-weight: bold } /* Name.Entity */
+.listingblock .pygments .tok-ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.listingblock .pygments .tok-nf { color: #0000FF } /* Name.Function */
+.listingblock .pygments .tok-nl { color: #A0A000 } /* Name.Label */
+.listingblock .pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.listingblock .pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
+.listingblock .pygments .tok-nv { color: #19177C } /* Name.Variable */
+.listingblock .pygments .tok-ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.listingblock .pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
+.listingblock .pygments .tok-mb { color: #666666 } /* Literal.Number.Bin */
+.listingblock .pygments .tok-mf { color: #666666 } /* Literal.Number.Float */
+.listingblock .pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
+.listingblock .pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
+.listingblock .pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
+.listingblock .pygments .tok-sa { color: #BA2121 } /* Literal.String.Affix */
+.listingblock .pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
+.listingblock .pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
+.listingblock .pygments .tok-dl { color: #BA2121 } /* Literal.String.Delimiter */
+.listingblock .pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.listingblock .pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
+.listingblock .pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.listingblock .pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
+.listingblock .pygments .tok-si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.listingblock .pygments .tok-sx { color: #008000 } /* Literal.String.Other */
+.listingblock .pygments .tok-sr { color: #BB6688 } /* Literal.String.Regex */
+.listingblock .pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
+.listingblock .pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
+.listingblock .pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
+.listingblock .pygments .tok-fm { color: #0000FF } /* Name.Function.Magic */
+.listingblock .pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
+.listingblock .pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
+.listingblock .pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
+.listingblock .pygments .tok-vm { color: #19177C } /* Name.Variable.Magic */
+.listingblock .pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
+</style>
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
 <h1>Task User Guide</h1>
 <div class="details">
 <span id="author" class="author">Antoine Kalmbach</span><br>
+<span id="email" class="email"><a href="mailto:ane@iki.fi">ane@iki.fi</a></span><br>
 <span id="revnumber">version 0.1.0</span>
 </div>
 <div id="toc" class="toc2">
@@ -461,6 +533,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is the official Task user guide.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/ane/task">Github Project</a></p>
+</li>
+<li>
+<p><a href="https://ane.github.io/task/api">API Documentation</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -529,15 +611,15 @@ this is what you need to do.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(def myreq
-  (task/then
-    (fn [data] (-&gt;&gt; data                          <b class="conum">(2)</b>
-                    cheshire/parse-string         <b class="conum">(3)</b>
-                    :my-interesting-attribute     <b class="conum">(3)</b>
-                    clojure.string/upper-case))   <b class="conum">(3)</b>
-    (http/get "http://some.api/endpoint"))        <b class="conum">(1)</b>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-k">def </span><span class="tok-nv">myreq</span>
+  <span class="tok-p">(</span><span class="tok-nf">task/then</span>
+    <span class="tok-p">(</span><span class="tok-k">fn </span><span class="tok-p">[</span><span class="tok-nv">data</span><span class="tok-p">]</span> <span class="tok-p">(</span><span class="tok-nf">-&gt;&gt;</span> <span class="tok-nv">data</span>                          <b class="conum">(2)</b>
+                    <span class="tok-nv">cheshire/parse-string</span>         <b class="conum">(3)</b>
+                    <span class="tok-ss">:my-interesting-attribute</span>     <b class="conum">(3)</b>
+                    <span class="tok-nv">clojure.string/upper-case</span><span class="tok-p">))</span>   <b class="conum">(3)</b>
+    <span class="tok-p">(</span><span class="tok-nf">http/get</span> <span class="tok-s">&quot;http://some.api/endpoint&quot;</span><span class="tok-p">))</span>        <b class="conum">(1)</b>
 
-(println @myreq)                                  <b class="conum">(4)</b></code></pre>
+<span class="tok-p">(</span><span class="tok-nb">println </span><span class="tok-o">@</span><span class="tok-nv">myreq</span><span class="tok-p">)</span> <b class="conum">(4)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -589,7 +671,7 @@ the computation.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">[com.github.ane/task "0.1.0"]</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">[</span><span class="tok-nv">com.github.ane/task</span> <span class="tok-s">&quot;0.1.0&quot;</span><span class="tok-p">]</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -612,9 +694,9 @@ evaluate its result in another thread.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(task/run (println "hello")
-          (Thread/sleep 1000)
-          123)</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-p">(</span><span class="tok-nb">println </span><span class="tok-s">&quot;hello&quot;</span><span class="tok-p">)</span>
+          <span class="tok-p">(</span><span class="tok-nf">Thread/sleep</span> <span class="tok-mi">1000</span><span class="tok-p">)</span>
+          <span class="tok-mi">123</span><span class="tok-p">)</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -626,10 +708,10 @@ standard library. This blocks the current thread.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">; these are both equal
-@(task/run 123) ; =&gt; 123
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-c1">; these are both equal</span>
+<span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-mi">123</span><span class="tok-p">)</span> <span class="tok-c1">; =&gt; 123</span>
 
-(deref (task/run 123)) ; =&gt; 123</code></pre>
+<span class="tok-p">(</span><span class="tok-nb">deref </span><span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-mi">123</span><span class="tok-p">))</span> <span class="tok-c1">; =&gt; 123</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -642,7 +724,7 @@ unwanted execution, use <code>now</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">@(task/now 123)</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">task/now</span> <span class="tok-mi">123</span><span class="tok-p">)</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -655,10 +737,10 @@ an explicit Executor parameter.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(let [pool (Executors/newFixedThreadPool 16)]
-  (task/run-in pool
-    (Thread/sleep 1000)
-    123)</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-k">let </span><span class="tok-p">[</span><span class="tok-nv">pool</span> <span class="tok-p">(</span><span class="tok-nf">Executors/newFixedThreadPool</span> <span class="tok-mi">16</span><span class="tok-p">)]</span>
+  <span class="tok-p">(</span><span class="tok-nf">task/run-in</span> <span class="tok-nv">pool</span>
+    <span class="tok-p">(</span><span class="tok-nf">Thread/sleep</span> <span class="tok-mi">1000</span><span class="tok-p">)</span>
+    <span class="tok-mi">123</span><span class="tok-p">)</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -667,9 +749,9 @@ ExecutorService in scope. Rebinding <code>*pool*</code> to the executor of your 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(binding [task/*pool* (Executors/newFixedThreadPool 1)]
-  (task/run (Thread/sleep 1000)
-            (println "hello!")))</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nb">binding </span><span class="tok-p">[</span><span class="tok-nv">task/*pool*</span> <span class="tok-p">(</span><span class="tok-nf">Executors/newFixedThreadPool</span> <span class="tok-mi">1</span><span class="tok-p">)]</span>
+  <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-p">(</span><span class="tok-nf">Thread/sleep</span> <span class="tok-mi">1000</span><span class="tok-p">)</span>
+            <span class="tok-p">(</span><span class="tok-nb">println </span><span class="tok-s">&quot;hello!&quot;</span><span class="tok-p">)))</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -687,8 +769,8 @@ and the <a href="#execution-model">Execution model</a> for more information abou
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(task/then clojure.string/upper-case (task/run "asdf"))
-; =&gt; ASDF</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">task/then</span> <span class="tok-nv">clojure.string/upper-case</span> <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-s">&quot;asdf&quot;</span><span class="tok-p">))</span>
+<span class="tok-c1">; =&gt; ASDF</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -696,9 +778,9 @@ and the <a href="#execution-model">Execution model</a> for more information abou
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">@(task/then inc (task/run 123))
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">task/then</span> <span class="tok-nb">inc </span><span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-mi">123</span><span class="tok-p">))</span>
 
-; =&gt; 124</code></pre>
+<span class="tok-c1">; =&gt; 124</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -707,10 +789,10 @@ and the <a href="#execution-model">Execution model</a> for more information abou
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">@(task/compose (fn [x] (task/run
-                         (Thread/sleep 1212)
-                         (inc x)))
-               (task/run 778))</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">task/compose</span> <span class="tok-p">(</span><span class="tok-k">fn </span><span class="tok-p">[</span><span class="tok-nv">x</span><span class="tok-p">]</span> <span class="tok-p">(</span><span class="tok-nf">task/run</span>
+                         <span class="tok-p">(</span><span class="tok-nf">Thread/sleep</span> <span class="tok-mi">1212</span><span class="tok-p">)</span>
+                         <span class="tok-p">(</span><span class="tok-nb">inc </span><span class="tok-nv">x</span><span class="tok-p">)))</span>
+               <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-mi">778</span><span class="tok-p">))</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -726,15 +808,15 @@ task.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">@(then inc (future 9)) ; =&gt; 10
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">then</span> <span class="tok-nb">inc </span><span class="tok-p">(</span><span class="tok-nf">future</span> <span class="tok-mi">9</span><span class="tok-p">))</span> <span class="tok-c1">; =&gt; 10</span>
 
-(def foo (promise))
+<span class="tok-p">(</span><span class="tok-k">def </span><span class="tok-nv">foo</span> <span class="tok-p">(</span><span class="tok-nf">promise</span><span class="tok-p">))</span>
 
-(then println foo)
+<span class="tok-p">(</span><span class="tok-nf">then</span> <span class="tok-nb">println </span><span class="tok-nv">foo</span><span class="tok-p">)</span>
 
-(deliver foo "hello")
+<span class="tok-p">(</span><span class="tok-nf">deliver</span> <span class="tok-nv">foo</span> <span class="tok-s">&quot;hello&quot;</span><span class="tok-p">)</span>
 
-; prints "hello"</code></pre>
+<span class="tok-c1">; prints &quot;hello&quot;</span></code></pre>
 </div>
 </div>
 </div>
@@ -781,9 +863,9 @@ the executor of your choice.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(binding [task/*pool* (Executors/newCachedThreadPool)]
-  (task/run (println "Hello!")
-            1)))</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nb">binding </span><span class="tok-p">[</span><span class="tok-nv">task/*pool*</span> <span class="tok-p">(</span><span class="tok-nf">Executors/newCachedThreadPool</span><span class="tok-p">)]</span>
+  <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-p">(</span><span class="tok-nb">println </span><span class="tok-s">&quot;Hello!&quot;</span><span class="tok-p">)</span>
+            <span class="tok-mi">1</span><span class="tok-p">)))</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -799,8 +881,8 @@ the executor of your choice.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(let [pool (Executors/newFixedThreadPool 4)]
-  (task/then-in inc (task/run-in 123 pool) pool))</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-k">let </span><span class="tok-p">[</span><span class="tok-nv">pool</span> <span class="tok-p">(</span><span class="tok-nf">Executors/newFixedThreadPool</span> <span class="tok-mi">4</span><span class="tok-p">)]</span>
+  <span class="tok-p">(</span><span class="tok-nf">task/then-in</span> <span class="tok-nb">inc </span><span class="tok-p">(</span><span class="tok-nf">task/run-in</span> <span class="tok-mi">123</span> <span class="tok-nv">pool</span><span class="tok-p">)</span> <span class="tok-nv">pool</span><span class="tok-p">))</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -808,19 +890,19 @@ the executor of your choice.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(let [pool1 (Executors/newFixedThreadPool 4)
-      pool2 (Executors/newCachedThreadPool)
-      init (task/run-in pool1
-                        (Thread/sleep 1000)
-                        (println "we start in" (.getName (Thread/currentThread)))
-                        'blaa)]
-  (task/then-in
-    pool2
-    (fn [x]
-      (println "...but we end in" (.getName (Thread/currentThread)))) init))
-; prints:
-; we start in pool-8-thread-1
-; ...but we end in pool-9-thread-1</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-k">let </span><span class="tok-p">[</span><span class="tok-nv">pool1</span> <span class="tok-p">(</span><span class="tok-nf">Executors/newFixedThreadPool</span> <span class="tok-mi">4</span><span class="tok-p">)</span>
+      <span class="tok-nv">pool2</span> <span class="tok-p">(</span><span class="tok-nf">Executors/newCachedThreadPool</span><span class="tok-p">)</span>
+      <span class="tok-nv">init</span> <span class="tok-p">(</span><span class="tok-nf">task/run-in</span> <span class="tok-nv">pool1</span>
+                        <span class="tok-p">(</span><span class="tok-nf">Thread/sleep</span> <span class="tok-mi">1000</span><span class="tok-p">)</span>
+                        <span class="tok-p">(</span><span class="tok-nb">println </span><span class="tok-s">&quot;we start in&quot;</span> <span class="tok-p">(</span><span class="tok-nf">.getName</span> <span class="tok-p">(</span><span class="tok-nf">Thread/currentThread</span><span class="tok-p">)))</span>
+                        <span class="tok-ss">&#39;blaa</span><span class="tok-p">)]</span>
+  <span class="tok-p">(</span><span class="tok-nf">task/then-in</span>
+    <span class="tok-nv">pool2</span>
+    <span class="tok-p">(</span><span class="tok-k">fn </span><span class="tok-p">[</span><span class="tok-nv">x</span><span class="tok-p">]</span>
+      <span class="tok-p">(</span><span class="tok-nb">println </span><span class="tok-s">&quot;...but we end in&quot;</span> <span class="tok-p">(</span><span class="tok-nf">.getName</span> <span class="tok-p">(</span><span class="tok-nf">Thread/currentThread</span><span class="tok-p">))))</span> <span class="tok-nv">init</span><span class="tok-p">))</span>
+<span class="tok-c1">; prints:</span>
+<span class="tok-c1">; we start in pool-8-thread-1</span>
+<span class="tok-c1">; ...but we end in pool-9-thread-1</span></code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -846,10 +928,10 @@ some boilerplate when working with tasks that depend on each other:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(task/for [x (task/run 123)
-           y (future 123)
-           z (task/run (Thread/sleep 1000) 4)]
-          (+ x y z))</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">task/for</span> <span class="tok-p">[</span><span class="tok-nv">x</span> <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-mi">123</span><span class="tok-p">)</span>
+           <span class="tok-nv">y</span> <span class="tok-p">(</span><span class="tok-nf">future</span> <span class="tok-mi">123</span><span class="tok-p">)</span>
+           <span class="tok-nv">z</span> <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-p">(</span><span class="tok-nf">Thread/sleep</span> <span class="tok-mi">1000</span><span class="tok-p">)</span> <span class="tok-mi">4</span><span class="tok-p">)]</span>
+          <span class="tok-p">(</span><span class="tok-nb">+ </span><span class="tok-nv">x</span> <span class="tok-nv">y</span> <span class="tok-nv">z</span><span class="tok-p">))</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -867,8 +949,8 @@ into the values of each task inside it using <a id="sequence"></a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(task/sequence [(task/run 123) (future 9) (task/run (Thread/sleep 100) "hello")])
-; =&gt; [123 9 "hello]</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">task/sequence</span> <span class="tok-p">[(</span><span class="tok-nf">task/run</span> <span class="tok-mi">123</span><span class="tok-p">)</span> <span class="tok-p">(</span><span class="tok-nf">future</span> <span class="tok-mi">9</span><span class="tok-p">)</span> <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-p">(</span><span class="tok-nf">Thread/sleep</span> <span class="tok-mi">100</span><span class="tok-p">)</span> <span class="tok-s">&quot;hello&quot;</span><span class="tok-p">)])</span>
+<span class="tok-c1">; =&gt; [123 9 &quot;hello]</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -882,12 +964,12 @@ into the values of each task inside it using <a id="sequence"></a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(task/done? some-task)
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">task/done?</span> <span class="tok-nv">some-task</span><span class="tok-p">)</span>
 
-(task/done? (task/run (Thread/sleep 123123) 'foo))
-; =&gt; false
+<span class="tok-p">(</span><span class="tok-nf">task/done?</span> <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-p">(</span><span class="tok-nf">Thread/sleep</span> <span class="tok-mi">123123</span><span class="tok-p">)</span> <span class="tok-ss">&#39;foo</span><span class="tok-p">))</span>
+<span class="tok-c1">; =&gt; false</span>
 
-(task/done? (task/now 1))</code></pre>
+<span class="tok-p">(</span><span class="tok-nf">task/done?</span> <span class="tok-p">(</span><span class="tok-nf">task/now</span> <span class="tok-mi">1</span><span class="tok-p">))</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -895,11 +977,11 @@ into the values of each task inside it using <a id="sequence"></a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(def baz (task/run (Thread/sleep 10000) 'foo))
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-k">def </span><span class="tok-nv">baz</span> <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-p">(</span><span class="tok-nf">Thread/sleep</span> <span class="tok-mi">10000</span><span class="tok-p">)</span> <span class="tok-ss">&#39;foo</span><span class="tok-p">))</span>
 
-(task/complete! baz 'bar)
+<span class="tok-p">(</span><span class="tok-nf">task/complete!</span> <span class="tok-nv">baz</span> <span class="tok-ss">&#39;bar</span><span class="tok-p">)</span>
 
-@baz ; =&gt; 'bar</code></pre>
+<span class="tok-o">@</span><span class="tok-nv">baz</span> <span class="tok-c1">; =&gt; &#39;bar</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -910,9 +992,9 @@ into the values of each task inside it using <a id="sequence"></a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(else (task/run (Thread/sleep 1000) 1) 2)
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">else</span> <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-p">(</span><span class="tok-nf">Thread/sleep</span> <span class="tok-mi">1000</span><span class="tok-p">)</span> <span class="tok-mi">1</span><span class="tok-p">)</span> <span class="tok-mi">2</span><span class="tok-p">)</span>
 
-; =&gt; 2</code></pre>
+<span class="tok-c1">; =&gt; 2</span></code></pre>
 </div>
 </div>
 <div class="sect3">
@@ -922,11 +1004,11 @@ into the values of each task inside it using <a id="sequence"></a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(def t (task/now 123))
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-k">def </span><span class="tok-nv">t</span> <span class="tok-p">(</span><span class="tok-nf">task/now</span> <span class="tok-mi">123</span><span class="tok-p">))</span>
 
-(task/force! t 'hi)
+<span class="tok-p">(</span><span class="tok-nf">task/force!</span> <span class="tok-nv">t</span> <span class="tok-ss">&#39;hi</span><span class="tok-p">)</span>
 
-@t ; =&gt; 'hi</code></pre>
+<span class="tok-o">@</span><span class="tok-nv">t</span> <span class="tok-c1">; =&gt; &#39;hi</span></code></pre>
 </div>
 </div>
 </div>
@@ -937,9 +1019,9 @@ into the values of each task inside it using <a id="sequence"></a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(def my-task (task/run (Thread/sleep 10000) 'bla))
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-k">def </span><span class="tok-nv">my-task</span> <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-p">(</span><span class="tok-nf">Thread/sleep</span> <span class="tok-mi">10000</span><span class="tok-p">)</span> <span class="tok-ss">&#39;bla</span><span class="tok-p">))</span>
 
-(task/cancel my-task)</code></pre>
+<span class="tok-p">(</span><span class="tok-nf">task/cancel</span> <span class="tok-nv">my-task</span><span class="tok-p">)</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -947,7 +1029,7 @@ into the values of each task inside it using <a id="sequence"></a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(cancelled? my-task) ; =&gt; true</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">cancelled?</span> <span class="tok-nv">my-task</span><span class="tok-p">)</span> <span class="tok-c1">; =&gt; true</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -964,11 +1046,11 @@ produces an exception when `deref&#8217;d:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(def oops (task/run (throw (RuntimeException. "hey!"))))
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-k">def </span><span class="tok-nv">oops</span> <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-p">(</span><span class="tok-nf">throw</span> <span class="tok-p">(</span><span class="tok-nf">RuntimeException.</span> <span class="tok-s">&quot;hey!&quot;</span><span class="tok-p">))))</span>
 
-@oops
+<span class="tok-o">@</span><span class="tok-nv">oops</span>
 
-; RuntimeException hey!  task.core/fn--17494 (form-init7142405608168193525.clj:182)</code></pre>
+<span class="tok-c1">; RuntimeException hey!  task.core/fn--17494 (form-init7142405608168193525.clj:182)</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -976,7 +1058,7 @@ produces an exception when `deref&#8217;d:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(task/failed? oops) ; =&gt; true</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">task/failed?</span> <span class="tok-nv">oops</span><span class="tok-p">)</span> <span class="tok-c1">; =&gt; true</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -984,7 +1066,7 @@ produces an exception when `deref&#8217;d:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(def failed-task (task/failed (RuntimeException. "argf")))</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-k">def </span><span class="tok-nv">failed-task</span> <span class="tok-p">(</span><span class="tok-nf">task/failed</span> <span class="tok-p">(</span><span class="tok-nf">RuntimeException.</span> <span class="tok-s">&quot;argf&quot;</span><span class="tok-p">)))</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -992,7 +1074,7 @@ produces an exception when `deref&#8217;d:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(task/failure failed-task) ; =&gt; RuntimeException[:cause "argf"]</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">task/failure</span> <span class="tok-nv">failed-task</span><span class="tok-p">)</span> <span class="tok-c1">; =&gt; RuntimeException[:cause &quot;argf&quot;]</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1000,13 +1082,13 @@ produces an exception when `deref&#8217;d:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(def foo (task/now "hi there"))
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-k">def </span><span class="tok-nv">foo</span> <span class="tok-p">(</span><span class="tok-nf">task/now</span> <span class="tok-s">&quot;hi there&quot;</span><span class="tok-p">))</span>
 
-(task/fail! foo (IllegalStateException. "poop"))
+<span class="tok-p">(</span><span class="tok-nf">task/fail!</span> <span class="tok-nv">foo</span> <span class="tok-p">(</span><span class="tok-nf">IllegalStateException.</span> <span class="tok-s">&quot;poop&quot;</span><span class="tok-p">))</span>
 
-(task/failed? foo) ; =&gt; true
+<span class="tok-p">(</span><span class="tok-nf">task/failed?</span> <span class="tok-nv">foo</span><span class="tok-p">)</span> <span class="tok-c1">; =&gt; true</span>
 
-(task/failure foo) ; =&gt; IllegalStateException[:cause "poop"]</code></pre>
+<span class="tok-p">(</span><span class="tok-nf">task/failure</span> <span class="tok-nv">foo</span><span class="tok-p">)</span> <span class="tok-c1">; =&gt; IllegalStateException[:cause &quot;poop&quot;]</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1022,9 +1104,9 @@ fail.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(def boom (task/run (/ 1 0)))
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-k">def </span><span class="tok-nv">boom</span> <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-p">(</span><span class="tok-nb">/ </span><span class="tok-mi">1</span> <span class="tok-mi">0</span><span class="tok-p">)))</span>
 
-(def incremented (task/then inc boom))</code></pre>
+<span class="tok-p">(</span><span class="tok-k">def </span><span class="tok-nv">incremented</span> <span class="tok-p">(</span><span class="tok-nf">task/then</span> <span class="tok-nb">inc </span><span class="tok-nv">boom</span><span class="tok-p">))</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1033,13 +1115,13 @@ succeeds:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">@(recover incremented
-          (fn [ex]
-            (println "caught exception: " (.getMessage ex))
-            123))
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">recover</span> <span class="tok-nv">incremented</span>
+          <span class="tok-p">(</span><span class="tok-k">fn </span><span class="tok-p">[</span><span class="tok-nv">ex</span><span class="tok-p">]</span>
+            <span class="tok-p">(</span><span class="tok-nb">println </span><span class="tok-s">&quot;caught exception: &quot;</span> <span class="tok-p">(</span><span class="tok-nf">.getMessage</span> <span class="tok-nv">ex</span><span class="tok-p">))</span>
+            <span class="tok-mi">123</span><span class="tok-p">))</span>
 
-; caught exception: java.lang.ArithmeticException: Divide by zero
-; =&gt; 123</code></pre>
+<span class="tok-c1">; caught exception: java.lang.ArithmeticException: Divide by zero</span>
+<span class="tok-c1">; =&gt; 123</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1048,7 +1130,7 @@ function. Supplying a non-function will just recover with that value:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">@(recover boom "hello") ; =&gt; "hello"</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">recover</span> <span class="tok-nv">boom</span> <span class="tok-s">&quot;hello&quot;</span><span class="tok-p">)</span> <span class="tok-c1">; =&gt; &quot;hello&quot;</span></code></pre>
 </div>
 </div>
 </div>
@@ -1119,12 +1201,12 @@ This is how it works.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">(def ^:dynamic foo "hello")
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-k">def </span><span class="tok-o">^</span><span class="tok-ss">:dynamic</span> <span class="tok-nv">foo</span> <span class="tok-s">&quot;hello&quot;</span><span class="tok-p">)</span>
 
-(println foo) ; prints "hello"
+<span class="tok-p">(</span><span class="tok-nb">println </span><span class="tok-nv">foo</span><span class="tok-p">)</span> <span class="tok-c1">; prints &quot;hello&quot;</span>
 
-(binding [foo "hi"]
-  (println foo)) ; prints "ho"</code></pre>
+<span class="tok-p">(</span><span class="tok-nb">binding </span><span class="tok-p">[</span><span class="tok-nv">foo</span> <span class="tok-s">&quot;hi&quot;</span><span class="tok-p">]</span>
+  <span class="tok-p">(</span><span class="tok-nb">println </span><span class="tok-nv">foo</span><span class="tok-p">))</span> <span class="tok-c1">; prints &quot;ho&quot;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1133,7 +1215,7 @@ is [[<em>pool</em>]].</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-clojure" data-lang="clojure">TODO: example</code></pre>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-nv">TODO</span><span class="tok-err">:</span> <span class="tok-nv">example</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1175,11 +1257,8 @@ to handle incoming requests and the web server will appear unresponsive!</p>
 <div id="footer">
 <div id="footer-text">
 Version 0.1.0<br>
-Last updated 2017-12-01 20:52:38 EET
+Last updated 2017-12-01 21:11:12 EET
 </div>
 </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
 </body>
 </html>

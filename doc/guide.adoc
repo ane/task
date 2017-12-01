@@ -1,5 +1,5 @@
 = Task User Guide
-Antoine Kalmbach
+Antoine Kalmbach <ane@iki.fi>
 v0.1.0
 :toc: left
 :numbered:
@@ -8,10 +8,14 @@ v0.1.0
 :sectlinks:
 :sectnums:
 :sectanchors:
-:source-highlighter: highlightjs
+:source-highlighter: pygments
+:pygments-style: default
 :sourcedir: ../src/examples/clj/task
 
-This is the official Task user guide.
+Welcome to the official Task user guide!
+
+* https://github.com/ane/task[Github Project]
+* https://ane.github.io/task/api[API Documentation]
 
 [[overview]]
 == Overview
