@@ -1,11 +1,12 @@
-(defproject com.github.ane/task "0.1.0"
+(defproject com.github.ane/task "0.1.0-SNAPSHOT"
   :description "Task is a Clojure library for asynchronous
   computation. It provides functional primitives that
   makes concurrent programming accessible and powerful."
   :url "http://example.com/FIXME"
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
-  :dependencies [[org.clojure/clojure "1.8.0"]]
+  :dependencies [[org.clojure/clojure "1.8.0"]
+                 [com.github.ane/codox-kingfisher-theme "0.1.0-SNAPSHOT"]]
   :source-paths ["src/main/clj"]
   :test-paths ["src/test/clj"]
   :resource-pahts ["src/main/resources"]

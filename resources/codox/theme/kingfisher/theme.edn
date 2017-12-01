@@ -1,8 +1,0 @@
-{:resources ["css/kingfisher.css"]
- :transforms
- [[:head]
-  [:append
-   [:link {:rel "stylesheet" :type "text/css" :href "css/kingfisher.css"}]
-   [:link {:rel "stylesheet" :type "text/css" :href "https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700|Source+Code+Pro"}]]
-  [:div.sidebar.primary
-   [:set-attr :style "width: 250px;"]]]}
