@@ -10,7 +10,8 @@
   :test-paths ["src/test/clj"]
   :resource-pahts ["src/main/resources"]
   :plugins [[test2junit "1.1.2"]
-            [lein-codox "0.10.3"]]
+            [lein-codox "0.10.3"]
+            [lein-exec "0.3.7"]]
   :codox {:output-path "docs"
           :themes [:default :kingfisher]
           :metadata {:doc/format :markdown}

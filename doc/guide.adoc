@@ -1,4 +1,4 @@
-= User Guide
+= Task User Guide
 Antoine Kalmbach
 v0.1.0
 :toc: left
@@ -6,12 +6,108 @@ v0.1.0
 :idseparator: -
 :idprefix:
 :sectlinks:
+:sectnums:
+:sectanchors:
+:source-highlighter: prettify
+:sourcedir: ../src/examples/clj/task
 
 This is the official Task user guide.
 
+[[overview]]
+== Overview
+
+This document is a reference documentation for Task, a Clojure library for asynchronous computation.
+
+=== What is Task?
+
+Tasks provide simple and functional concurrency primitives for Clojure.
+Tasks represent asynchronous computation as __pure values__, and favours
+function composition over
+https://en.wikipedia.org/wiki/Callback_(computer_programming)[callbacks]
+or promises.
+
+Task promotes the use of combinators like `then` and `compose`.
+These let you combine asynchronous data functionally, so that
+asynchronous steps are just transformations on a value.
+
+=== Key features
+
+* **Value-oriented**: tasks are just eventual values. No more callbacks,
+regular `deref`/`@` is all you need.
+* **Functional**: tasks are composable. Tasks come with a set of
+operations that lets you compose and combine them in a functional
+manner.
+* **Interoperable**: Any Clojure `future`/`promise` can be converted
+into a task, and vice versa.
+* **Asynchronous**: tasks are always asynchronous. Tasks default to the
+https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ForkJoinPool.html?is-external=true[ForkJoinPool]
+executor.
+* **Customizable**: If you wish to control the execution model, you can
+define your own
+https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html[ExecutorService].
+* **Performant**: The library leverages the standard
+https://docs.oracle.com/javase/8/docs/technotes/guides/concurrency/changes8.html[Java
+8 Concurrency API], a powerful framework for concurrent computation.
+
+=== An example
+
+For example, a potential use case for asynchronous computation is doing HTTP requests. 
+If we want to operate on the value of a GET request, and apply a data transformation,
+this is what you need to do.
+
+[source,clojure]
+----
+(def myreq 
+  (task/then
+    (fn [data] (->> data                          ;; <2>
+                    cheshire/parse-string         ;; <3>
+                    :my-interesting-attribute     ;; <3>
+                    clojure.string/upper-case))   ;; <3>
+    (http/get "http://some.api/endpoint"))        ;; <1>
+
+(println @myreq)                                  ;; <4>
+----
+<1> We launch a HTTP GET request asynchronously using http://www.http-kit.org/[http-kit]. The 
+    promise returned by it is converted into a task automatically.
+<2> We pass the task and a function to `then`, a function described in <<composing-tasks>>. The *function* comes
+    first and then comes the task.
+<3> We parse the JSON data using Cheshire, extract an attribute and uppercase it.
+<4> We deref the value of hte task which blocks the current thread until the task is complete.
+
+This whole value executes in another thread (depending on the
+link:./03-executors.md[execution model]) and _eventually_ resolves to a
+value as it is `deref` d.
+
+The snippet uses http://www.http-kit.org/[http-kit] to launch a GET
+request asynchronously (<1>). The http-kit promise is automatically converted
+into a task. Once the promise completes, we parse the string into JSON
+(`cheshire/parse-string`) and then extract our attribute from it, and
+then uppercase the results.
+
+All of this is executed asynchronously, so we wrap the call to `then`
+with a call to `@`, which calls
+http://clojuredocs.org/clojure.core/deref[deref], a Clojure standard
+library function, to _await_ its result in the current thread. This
+blocks the execution of the current thread an and returns the result of
+the computation.
+
+Head over to the link:./02-guide.md[User Guide] to learn more!
+
+=== Installation & Requirements
+
+You need Java 8 to use Task, because Task uses features that were introduced in that version. To install Task, just addition
+
+[source,clojure]
+----
+[com.github.ane/task "0.1.0"]
+----
+
+to your Leiningen or Boot project dependency section.
+
 [[creating-tasks]]
-Creating tasks
-~~~~~~~~~~~~~~
+== Getting started
+
+=== Creating tasks
 
 To create a task, use [[run]]. It evaluates its result asynchronously.
 It behaves more or less like http://clojuredocs.org/clojure.core/do[do]
@@ -53,7 +149,8 @@ unwanted execution, use `now`:
 To create an empty task you can use `(void)` which is a task that never
 completes.
 
-If you want to use another executor, use `run-in`:
+If you want to use another executor, you have two options. You can use `run-in` which accepts
+an explicit Executor parameter.
 
 [source,clojure]
 ----
@@ -63,13 +160,25 @@ If you want to use another executor, use `run-in`:
     123)
 ----
 
+A more Clojurelike approach is to use *dynamic binding*. The namespace variable `task/\*pool*` is the default
+ExecutorService in scope. Rebinding `\*pool*` to the executor of your choosing is done as follows:
+
+[source, clojure]
+----
+(binding [task/*pool* (Executors/newFixedThreadPool 1)]
+  (task/run (Thread/sleep 1000)
+            (println "hello!")))
+----
+
+This approach, dynamic binding, lets you do executor assignment in a much more idiomatic fashion. See also <<using-executors>>
+and the <<execution-model>> for more information about executors.
+
 [[composing-tasks]]
-Composing tasks
-~~~~~~~~~~~~~~~
+=== Composing tasks
 
 [[function-application-then]]
-Function application: `then`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+==== Function application: `then`
 
 If you want to apply a function on the value returned by a task, use
 `then`:
@@ -104,8 +213,7 @@ If you had used `then` the result would have been a task inside another
 task.
 
 [[interoperability]]
-Interoperability
-~~~~~~~~~~~~~~~~
+=== Interoperability
 
 Standard Clojure `future` and `promise` are compatible with tasks:
 
@@ -123,39 +231,72 @@ Standard Clojure `future` and `promise` are compatible with tasks:
 ----
 
 [[using-executors]]
-Using executors
-~~~~~~~~~~~~~~~
+=== Using custom executors
 
-Both `then` and `compose` accept a third parameter as the
-https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html[ExecutorService]:
+By default, the `\*pool*` variable is bound to the default executor known as ForkJoinPool. If you want to
+use your own executor, there are two approaches:
+
+  1. Use http://clojure.github.io/clojure/clojure.core-api.html#clojure.core/binding[dynamic binding] to set `\*pool*` to
+the executor of your choice.
+  2. [[explicit-variants]]Use the explicit variants of the combinators which accept an executor as the third parameter. These are:
+     * https://ane.github.io/task/task.core.html#var-run-in[run-in]
+     * https://ane.github.io/task/task.core.html#var-then-in[sequence-in]
+     * https://ane.github.io/task/task.core.html#var-compose-in[compose-in]
+     * https://ane.github.io/task/task.core.html#var-for-in[for-in]
+     * https://ane.github.io/task/task.core.html#var-sequence-in[sequence-in]
+
+==== Using dynamic binding
+
+Rebind `\*pool*` like this:
+
+[source,clojure]
+----
+(binding [task/*pool* (Executors/newCachedThreadPool)]
+  (task/run (println "Hello!")
+            1)))
+----
+
+In the scope, and subsequent calls to, the core functions, the default executing pool will be the binding.
+
+==== Using explicit executors
+
+All core combinators like `then` and `compose` accept a third parameter as the
+https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html[ExecutorService] in their
+<<explicit-variants, explicit variants>>:
 
 [source,clojure]
 ----
 (let [pool (Executors/newFixedThreadPool 4)]
-  (task/then inc (task/run 123) pool))
+  (task/then-in inc (task/run-in 123 pool) pool))
 ----
 
+This approach can be used to define multiple thread pools and use them in the chain of a task execution.
+
+[source,clojure]
+----
+include::{sourcedir}/tutorial.clj[tag=multiple-executors,indent=0]
+----
+
+NOTE: It is possible switch thread pools between calls to combinators. You may vary well
+define multiple executors and pass them to subsequent calls to the explicit combinator variants. This lets you spread
+the task execution into multiple executors, but you must be careful
+
 [[using-for-to-avoid-boilerplate]]
-Using `for` to avoid boilerplate
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Using `for` to avoid boilerplate
 
 The [[for]] macro, like its standard library namesake, lets you skip
 some boilerplate when working with tasks that depend on each other:
 
 [source,clojure]
 ----
-(task/for [x (task/run 123)
-           y (future 123)
-           z (task/run (Thread/sleep 1000) 4)]
-  (+ x y z))
+include::{sourcedir}/tutorial.clj[tag=for,indent=0]
 ----
 
 `for` evaluates its body once all futures are complete, and the values
 of each future are bound to their respective bindings.
 
 [[lists-of-tasks]]
-Lists of tasks
---------------
+=== Working with sequences
 
 If you have a sequence of tasks, and you want to deal with each result
 as a whole, you can turn a sequence of tasks into a task that evaluates
@@ -163,16 +304,13 @@ into the values of each task inside it using [[sequence]]:
 
 [source,clojure]
 ----
-@(task/sequence [(task/run 123) (future 9) (task/run (Thread/sleep 100) "hello")])
-
-; => [123 9 "hello"]
+include::{sourcedir}/tutorial.clj[tag=sequence1,indent=0]
 ----
 
 `sequence` completes when all the tasks complete.
 
 [[completion]]
-Completion
-^^^^^^^^^^
+=== Completion
 
 To check if a task is complete, use [[done?]]:
 
@@ -209,8 +347,7 @@ To get a value anyway if the task isn't complete, use [[else]]:
 ----
 
 [[forcing-a-result]]
-Forcing a result
-----------------
+==== Forcing a result
 
 To force the result of a task, completed or not, use [[force!]]:
 
@@ -224,8 +361,7 @@ To force the result of a task, completed or not, use [[force!]]:
 ----
 
 [[cancellation]]
-Cancellation
-^^^^^^^^^^^^
+==== Cancellation
 
 To cancel a task, use [[cancel]]:
 
@@ -246,8 +382,7 @@ To see if the task was cancelled, use [[cancelled?]]:
 Using `deref` on a cancelled task blows up, predictably.
 
 [[failures]]
-Failures
-^^^^^^^^
+==== Failures
 
 A task is said to have _failed_ if its evaluation produced an exception
 or it produced an exception during its execution. Such a task is a
@@ -301,10 +436,9 @@ Chaining a failed task to a normal task will cause the resulting task to
 fail.
 
 [[recovering-from-errors]]
-Recovering from errors
-----------------------
+=== Error handling
 
-To recover from errors, use [[recover]]:
+To recover from errors, use `recover`:
 
 [source,clojure]
 ----
@@ -334,3 +468,91 @@ function. Supplying a non-function will just recover with that value:
 ----
 @(recover boom "hello") ; => "hello"
 ----
+
+== Advanced topics
+
+[[execution-model]]
+=== Execution model
+
+In the task model, the execution model is intentionally kept opaque, but
+not hidden. This means that by default, the user doesn't need to worry
+about where -- in which thread -- code is executed.
+
+What the user needs to know, to __get started__, is:
+
+* all code is asynchronous and non-blocking, and
+* `deref` or `@` will block the __current thread__.
+
+The concurrency model is left to the __executor__.
+
+A JVM executor is an abstraction for thread execution. This can be a
+thread pool with 64 threads per core. Or more. Or less. By default, task
+uses
+https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ForkJoinPool.html[ForkJoinPool],
+a work-stealing scheduler, that attempts to find the best use for each
+of its threads.
+
+The reason to default to the ForkJoinPool, in addition for it being
+perfomant, is that it kind of makes tasks appear lightweight (a bit
+like, but not similar to, fibers), as the user does not intentionally
+think that there is a one-to-one correspondence between each task and a
+thread. This means that you can have several hundred tasks executing
+concurrently for only a handful of threads! The ForkJoinPool handles the
+heavy lifting here: some tasks will complete faster, some slower, so the
+point is to have this work-stealing algorithm that makes use of idle
+threads.
+
+It is often the case that such behavior is not desirable. Which is why
+the executor can be overridden via two methods:
+
+* implicitly by using dynamic binding, or
+* explicitly by using parameters to task-executing functions.
+
+Dynamic binding is a standard Clojure method for doing dynamic scope.
+This is how it works.
+
+[source,clojure]
+----
+(def ^:dynamic foo "hello")
+
+(println foo) ; prints "hello"
+
+(binding [foo "hi"]
+  (println foo)) ; prints "ho"
+----
+
+Using this technique lets us freely swap the executor. The var for this
+is [[__pool__]].
+
+[source,clojure]
+----
+TODO: example
+----
+
+The JVM offers
+https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ExecutorService.html[several]
+you can freely chose from. This document is not a guide on their
+details, the user is left to explore that page or the Internet for more
+examples.
+
+Usually, in 99% of cases, the default `ForkJoinPool` executor is just
+fine. But the option to customize is there.
+
+[[blocking-pitfalls]]
+Blocking pitfalls
+~~~~~~~~~~~~~~~~~
+
+To get the value out of a task, you deref it. This blocks the executing
+thread. It is generally safe to do so, but choosing the wrong kind of
+executor might yield strange behaviour.
+
+For example, when using a
+https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Executors.html#newFixedThreadPool-int-[fixed
+thread pool] like this, it might not be obvious that once you run out of
+threads, the whole program will grind to a halt.
+
+This is particularly nasty if you do it inside a HTTP server, e.g. you
+use the same thread pool for handling incoming web requests and database
+access. If your database hangs and takes time to answer the questions,
+the web server, which shares the thread pool, cannot spawn new threads
+to handle incoming requests and the web server will appear unresponsive!
