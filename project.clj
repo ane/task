@@ -13,7 +13,7 @@
   :plugins [[test2junit "1.1.2"]
             [lein-codox "0.10.3"]
             [lein-exec "0.3.7"]]
-  :codox {:output-path "docs"
+  :codox {:output-path "docs/api"
           :themes [:default :kingfisher]
           :metadata {:doc/format :markdown}
           :source-uri "https://github.com/ane/task/blob/master/{filepath}#L{line}"}

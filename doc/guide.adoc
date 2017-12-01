@@ -8,7 +8,7 @@ v0.1.0
 :sectlinks:
 :sectnums:
 :sectanchors:
-:source-highlighter: prettify
+:source-highlighter: highlightjs
 :sourcedir: ../src/examples/clj/task
 
 This is the official Task user guide.
