@@ -12,7 +12,7 @@ v0.1.0
 :pygments-style: default
 :sourcedir: ../src/examples/clj/task
 
-image:https://img.shields.io/clojars/v/com.github.ane/task.svg[link="https://clojars.org/com.github.ane/task"] image:https://img.shields.io/circleci/project/github/ane/task.svg[link=https://circleci.com/gh/ane/task/tree/master] image:https://img.shields.io/badge/License-Apache%202.0-blue.svg[link="http://www.apache.org/licenses/LICENSE-2.0"] image:https://img.shields.io/github/forks/badges/shields.svg?style=social&label=Fork[link=http://github.com/ane/task]
+image:https://img.shields.io/clojars/v/com.github.ane/task.svg[link="https://clojars.org/com.github.ane/task"] image:https://img.shields.io/circleci/project/github/ane/task.svg[link=https://circleci.com/gh/ane/task/tree/master] image:https://img.shields.io/badge/License-Apache%202.0-blue.svg[link="http://www.apache.org/licenses/LICENSE-2.0"]
 
 [.lead]
 Welcome to the official Task user guide!
