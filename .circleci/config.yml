@@ -41,5 +41,7 @@ jobs:
         
       # run tests!
       - run: lein test2junit
+      # run documentation
+      - run: lein exec -p src/examples/clj/task/tutorial.clj
       - store_test_results:
           path: target/test2junit
