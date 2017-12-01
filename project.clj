@@ -2,7 +2,7 @@
   :description "Task is a Clojure library for asynchronous
   computation. It provides functional primitives that
   makes concurrent programming accessible and powerful."
-  :url "http://example.com/FIXME"
+  :url "http://ane.github.com/task"
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [[org.clojure/clojure "1.8.0"]
