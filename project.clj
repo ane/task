@@ -9,6 +9,7 @@
                  [com.github.ane/codox-kingfisher-theme "0.1.0-SNAPSHOT"]]
   :source-paths ["src/main/clj"]
   :test-paths ["src/test/clj"]
+  :deploy-repositories [["releases" :clojars]]
   :resource-pahts ["src/main/resources"]
   :plugins [[test2junit "1.1.2"]
             [lein-codox "0.10.3"]
