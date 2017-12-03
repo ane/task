@@ -98,3 +98,8 @@
            @(task/recover (task/failed (IllegalArgumentException.)) ; let's be picky...
                           (fn [x] (when (= IllegalArgumentException (class x))
                                     'bla)))))))
+
+(deftest traverse-tests
+  (testing "traverse works"
+    (is (= [2 4 6 8 10]
+           @(task/traverse [1 2 3 4 5] (fn [x] (task/run (* 2 x))))))))

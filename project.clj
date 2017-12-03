@@ -1,4 +1,4 @@
-(defproject com.github.ane/task "0.1.0-SNAPSHOT"
+(defproject com.github.ane/task "0.2.0-SNAPSHOT"
   :description "Task is a Clojure library for asynchronous
   computation. It provides functional primitives that
   makes concurrent programming accessible and powerful."

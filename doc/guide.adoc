@@ -1,4 +1,4 @@
-= Task User Guide
+= Task Manual
 Antoine Kalmbach <ane@iki.fi>
 v0.1.0
 :toc: left
@@ -19,7 +19,6 @@ Welcome to the official Task user guide!
 
 * https://github.com/ane/task[Github Project]
 * https://ane.github.io/task/api[API Documentation]
-
 
 [[overview]]
 == Overview
@@ -113,7 +112,7 @@ You need Java 8 to use Task, because Task uses features that were introduced in 
 to your Leiningen or Boot project dependency section.
 
 [[creating-tasks]]
-== Getting started
+== User Guide
 
 === Creating tasks
 
@@ -145,7 +144,7 @@ standard library. This blocks the current thread.
 
 _See the docs on http://clojuredocs.org/clojure.core/deref[deref]._
 
-Note, that calling `(run 123)` results possibly in the creation of
+Calling `(run 123)` results possibly in the creation of
 another thread. To create an "immeadiate" value that doesn't cause any
 unwanted execution, use `now`:
 
@@ -154,7 +153,7 @@ unwanted execution, use `now`:
 @(task/now 123)
 ----
 
-To create an empty task you can use `(void)` which is a task that never
+[[void]] To create an empty task you can use `(void)` which is a task that never
 completes.
 
 If you want to use another executor, you have two options. You can use `run-in` which accepts
@@ -252,6 +251,7 @@ the executor of your choice.
      * https://ane.github.io/task/task.core.html#var-compose-in[compose-in]
      * https://ane.github.io/task/task.core.html#var-for-in[for-in]
      * https://ane.github.io/task/task.core.html#var-sequence-in[sequence-in]
+     * https://ane.github.io/task/task.core.html#var-traverse-in[traverse-in]
 
 ==== Using dynamic binding
 
@@ -259,9 +259,7 @@ Rebind `\*pool*` like this:
 
 [source,clojure]
 ----
-(binding [task/*pool* (Executors/newCachedThreadPool)]
-  (task/run (println "Hello!")
-            1)))
+include::{sourcedir}/tutorial.clj[tag=rebind1,indent=0]
 ----
 
 In the scope, and subsequent calls to, the core functions, the default executing pool will be the binding.
@@ -317,10 +315,20 @@ include::{sourcedir}/tutorial.clj[tag=sequence1,indent=0]
 
 `sequence` completes when all the tasks complete.
 
+Similarly, if you have a funtion that produces a task, you can apply it to
+a sequence and gather its results into inside one task.
+
+[source,clojure]
+----
+include::{sourcedir}/tutorial.clj[tag=traverse1,indent=0]
+----
+
+Using regular `map` would have just produced a sequence of tasks, not what we want.
+
 [[completion]]
 === Completion
 
-To check if a task is complete, use [[done?]]:
+To check if a task is complete, use `done?`:
 
 [source,clojure]
 ----
@@ -526,16 +534,11 @@ This is how it works.
 (println foo) ; prints "hello"
 
 (binding [foo "hi"]
-  (println foo)) ; prints "ho"
+  (println foo)) ; prints "hi"
 ----
 
 Using this technique lets us freely swap the executor. The var for this
-is [[__pool__]].
-
-[source,clojure]
-----
-TODO: example
-----
+is `\*pool*`. See the example in <<using-executors>>.
 
 The JVM offers
 https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ExecutorService.html[several]
@@ -547,8 +550,7 @@ Usually, in 99% of cases, the default `ForkJoinPool` executor is just
 fine. But the option to customize is there.
 
 [[blocking-pitfalls]]
-Blocking pitfalls
-~~~~~~~~~~~~~~~~~
+=== Beware of blocking
 
 To get the value out of a task, you deref it. This blocks the executing
 thread. It is generally safe to do so, but choosing the wrong kind of
@@ -559,7 +561,21 @@ https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Executors.html#ne
 thread pool] like this, it might not be obvious that once you run out of
 threads, the whole program will grind to a halt.
 
-This is particularly nasty if you do it inside a HTTP server, e.g. you
+Blocking inside a task will _block that task_. So if you have a special kind of thread pool that
+may run out of threads, this is the part where we'd say, *here be dragons*.
+
+Here is an example that will go awry.
+
+[source,clojure]
+----
+include::{sourcedir}/tutorial.clj[tag=whoops,indent=0]
+----
+
+The function that we pass to compose tries to deref `nothing`, which is a task that will never
+complete (see <<void,`void`>>). The executor we've defined has only one thread in its thread pool,
+so it cannot launch a new thread for the surrounding task resulting from the call to `compose`.
+
+How is this relevant? This is particularly nasty if you do it inside a HTTP server, e.g. you
 use the same thread pool for handling incoming web requests and database
 access. If your database hangs and takes time to answer the questions,
 the web server, which shares the thread pool, cannot spawn new threads

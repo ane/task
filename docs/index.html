@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
 <meta name="author" content="Antoine Kalmbach">
-<title>Task User Guide</title>
+<title>Task Manual</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -491,7 +491,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>Task User Guide</h1>
+<h1>Task Manual</h1>
 <div class="details">
 <span id="author" class="author">Antoine Kalmbach</span><br>
 <span id="email" class="email"><a href="mailto:ane@iki.fi">ane@iki.fi</a></span><br>
@@ -508,7 +508,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#installation-requirements">1.4. Installation &amp; Requirements</a></li>
 </ul>
 </li>
-<li><a href="#creating-tasks">2. Getting started</a>
+<li><a href="#creating-tasks">2. User Guide</a>
 <ul class="sectlevel2">
 <li><a href="#creating-tasks-2">2.1. Creating tasks</a></li>
 <li><a href="#composing-tasks">2.2. Composing tasks</a></li>
@@ -522,7 +522,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#advanced-topics">3. Advanced topics</a>
 <ul class="sectlevel2">
 <li><a href="#execution-model">3.1. Execution model</a></li>
-<li><a href="#blocking-pitfalls">3.2. Blocking pitfalls</a></li>
+<li><a href="#blocking-pitfalls">3.2. Beware of blocking</a></li>
 </ul>
 </li>
 </ul>
@@ -684,7 +684,7 @@ the computation.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="creating-tasks"><a class="anchor" href="#creating-tasks"></a>2. Getting started</h2>
+<h2 id="creating-tasks"><a class="anchor" href="#creating-tasks"></a>2. User Guide</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="creating-tasks-2"><a class="anchor" href="#creating-tasks-2"></a>2.1. Creating tasks</h3>
@@ -721,7 +721,7 @@ standard library. This blocks the current thread.</p>
 <p><em>See the docs on <a href="http://clojuredocs.org/clojure.core/deref">deref</a>.</em></p>
 </div>
 <div class="paragraph">
-<p>Note, that calling <code>(run 123)</code> results possibly in the creation of
+<p>Calling <code>(run 123)</code> results possibly in the creation of
 another thread. To create an "immeadiate" value that doesn&#8217;t cause any
 unwanted execution, use <code>now</code>:</p>
 </div>
@@ -731,7 +731,7 @@ unwanted execution, use <code>now</code>:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>To create an empty task you can use <code>(void)</code> which is a task that never
+<p><a id="void"></a> To create an empty task you can use <code>(void)</code> which is a task that never
 completes.</p>
 </div>
 <div class="paragraph">
@@ -854,6 +854,9 @@ the executor of your choice.</p>
 <li>
 <p><a href="https://ane.github.io/task/task.core.html#var-sequence-in">sequence-in</a></p>
 </li>
+<li>
+<p><a href="https://ane.github.io/task/task.core.html#var-traverse-in">traverse-in</a></p>
+</li>
 </ul>
 </div>
 </li>
@@ -959,11 +962,26 @@ into the values of each task inside it using <a id="sequence"></a>:</p>
 <div class="paragraph">
 <p><code>sequence</code> completes when all the tasks complete.</p>
 </div>
+<div class="paragraph">
+<p>Similarly, if you have a funtion that produces a task, you can apply it to
+a sequence and gather its results into inside one task.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nf">task/traverse</span>
+  <span class="tok-p">[</span><span class="tok-mi">1</span> <span class="tok-mi">2</span> <span class="tok-mi">3</span> <span class="tok-mi">4</span> <span class="tok-mi">5</span> <span class="tok-mi">6</span><span class="tok-p">]</span>
+  <span class="tok-p">(</span><span class="tok-k">fn </span><span class="tok-p">[</span><span class="tok-nv">x</span><span class="tok-p">]</span> <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-p">(</span><span class="tok-nb">* </span><span class="tok-mi">2</span> <span class="tok-nv">x</span><span class="tok-p">))))</span>
+<span class="tok-c1">; =&gt; [2 4 6 8 10 12]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using regular <code>map</code> would have just produced a sequence of tasks, not what we want.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="completion"><a class="anchor" href="#completion"></a>2.6. Completion</h3>
 <div class="paragraph">
-<p>To check if a task is complete, use [[done?]]:</p>
+<p>To check if a task is complete, use <code>done?</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1209,17 +1227,12 @@ This is how it works.</p>
 <span class="tok-p">(</span><span class="tok-nb">println </span><span class="tok-nv">foo</span><span class="tok-p">)</span> <span class="tok-c1">; prints &quot;hello&quot;</span>
 
 <span class="tok-p">(</span><span class="tok-nb">binding </span><span class="tok-p">[</span><span class="tok-nv">foo</span> <span class="tok-s">&quot;hi&quot;</span><span class="tok-p">]</span>
-  <span class="tok-p">(</span><span class="tok-nb">println </span><span class="tok-nv">foo</span><span class="tok-p">))</span> <span class="tok-c1">; prints &quot;ho&quot;</span></code></pre>
+  <span class="tok-p">(</span><span class="tok-nb">println </span><span class="tok-nv">foo</span><span class="tok-p">))</span> <span class="tok-c1">; prints &quot;hi&quot;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Using this technique lets us freely swap the executor. The var for this
-is [[<em>pool</em>]].</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-nv">TODO</span><span class="tok-err">:</span> <span class="tok-nv">example</span></code></pre>
-</div>
+is <code>*pool*</code>. See the example in <a href="#using-executors">Using custom executors</a>.</p>
 </div>
 <div class="paragraph">
 <p>The JVM offers
@@ -1234,7 +1247,7 @@ fine. But the option to customize is there.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="blocking-pitfalls"><a class="anchor" href="#blocking-pitfalls"></a>3.2. Blocking pitfalls</h3>
+<h3 id="blocking-pitfalls"><a class="anchor" href="#blocking-pitfalls"></a>3.2. Beware of blocking</h3>
 <div class="paragraph">
 <p>To get the value out of a task, you deref it. This blocks the executing
 thread. It is generally safe to do so, but choosing the wrong kind of
@@ -1247,7 +1260,31 @@ thread pool</a> like this, it might not be obvious that once you run out of
 threads, the whole program will grind to a halt.</p>
 </div>
 <div class="paragraph">
-<p>This is particularly nasty if you do it inside a HTTP server, e.g. you
+<p>Blocking inside a task will <em>block that task</em>. So if you have a special kind of thread pool that
+may run out of threads, this is the part where we&#8217;d say, <strong>here be dragons</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example that will go awry.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-p">(</span><span class="tok-nb">binding </span><span class="tok-p">[</span><span class="tok-nv">task/*pool*</span> <span class="tok-p">(</span><span class="tok-nf">Executors/newFixedThreadPool</span> <span class="tok-mi">1</span><span class="tok-p">)]</span>
+  <span class="tok-p">(</span><span class="tok-k">let </span><span class="tok-p">[</span><span class="tok-nv">nothing</span> <span class="tok-p">(</span><span class="tok-nf">task/void</span><span class="tok-p">)]</span>
+    <span class="tok-p">(</span><span class="tok-nf">task/compose</span>
+      <span class="tok-p">(</span><span class="tok-k">fn </span><span class="tok-p">[</span><span class="tok-nv">prev</span><span class="tok-p">]</span>
+        <span class="tok-p">(</span><span class="tok-nb">println </span><span class="tok-s">&quot;This will never complete!&quot;</span><span class="tok-p">)</span>
+        <span class="tok-p">(</span><span class="tok-nb">+ </span><span class="tok-mi">1</span> <span class="tok-nv">prev</span><span class="tok-p">))</span>
+      <span class="tok-p">(</span><span class="tok-nf">task/run</span>
+        <span class="tok-p">(</span><span class="tok-nb">+ </span><span class="tok-mi">3</span> <span class="tok-o">@</span><span class="tok-nv">nothing</span><span class="tok-p">))))))</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The function that we pass to compose tries to deref <code>nothing</code>, which is a task that will never
+complete (see <a href="#void"><code>void</code></a>). The executor we&#8217;ve defined has only one thread in its thread pool,
+so it cannot launch a new thread for the surrounding task resulting from the call to <code>compose</code>.</p>
+</div>
+<div class="paragraph">
+<p>How is this relevant? This is particularly nasty if you do it inside a HTTP server, e.g. you
 use the same thread pool for handling incoming web requests and database
 access. If your database hangs and takes time to answer the questions,
 the web server, which shares the thread pool, cannot spawn new threads
@@ -1260,7 +1297,7 @@ to handle incoming requests and the web server will appear unresponsive!</p>
 <div id="footer">
 <div id="footer-text">
 Version 0.1.0<br>
-Last updated 2017-12-01 21:42:40 EET
+Last updated 2017-12-03 20:23:36 EET
 </div>
 </div>
 </body>

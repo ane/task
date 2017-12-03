@@ -18,6 +18,15 @@
 ;; end::sequence1[]
   )
 
+(def traverse1
+;; tag::traverse1[]
+  (task/traverse
+    [1 2 3 4 5 6]
+    (fn [x] (task/run (* 2 x))))
+  ; => [2 4 6 8 10 12]
+;; end::traverse1[]
+  )
+
 (def multiple-executors
 ;; tag::multiple-executors[]
   (let [pool1 (Executors/newFixedThreadPool 4)
@@ -36,8 +45,33 @@
 ;; end::multiple-executors[]
   )
 
+(def rebind
+  ;; tag::rebind1[]
+  (binding [task/*pool* (Executors/newCachedThreadPool)]
+    (task/run (println "Hello!")
+              1)))
+  ;; end::rebind1[]
+
+(def whoops
+  ;; tag::whoops[]
+  (binding [task/*pool* (Executors/newFixedThreadPool 1)]
+    (let [nothing (task/void)]
+      (task/compose
+        (fn [prev]
+          (println "This will never complete!")
+          (+ 1 prev))
+        (task/run
+          (+ 3 @nothing))))))
+  ;; end::whoops[]
+
+(task/complete! whoops)
+
 @(task/for
    [_ multiple-executors
-    _ for-1]
+    _ for-1
+    _ sequence1
+    _ rebind
+    _ whoops
+    _ traverse1]
    (System/exit 0))
 

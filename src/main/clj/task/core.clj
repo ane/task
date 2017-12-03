@@ -51,7 +51,7 @@ or explicitly using an additional parameter.
   (done? [this] "Has the task completed in any fashion?")
   (cancel [this] "Attempt to cancel the future, returns true if it cancelled.")
   (cancelled? [this] "Was the task cancelled?")
-  (complete! [this value] "Complete the task with some value if it hasn't completed already.")
+  (complete! [this] [this value] "Complete the task with some value if it hasn't completed already.")
   (failed? [this] "Did the task complete with an exception of any kind?")
   (failure [this] "If the task has completed exceptionally, get the Throwable that produced the exceptional completion.")
   (else [this value] "Get the value of the task if it's complete. Otherwise return `value`. This is non-blocking.")
@@ -73,6 +73,7 @@ or explicitly using an additional parameter.
     (done?        [this]            (.isDone fut))
     (cancel       [this]            (.cancel fut true))
     (cancelled?   [this]            (.isCancelled fut))
+    (complete!    [this]            (.complete fut nil))
     (complete!    [this value]      (.complete fut value))
     (force!       [this value]      (.obtrudeValue fut value))
     (recover      [this f]          (future->task (.exceptionally fut (fn->Function f))))
@@ -186,23 +187,10 @@ to the result of `body`.
   See also [[compose-in]]."
   ([func] (fn [task] (compose-in *pool* func task)))
   ([func task] (compose-in *pool* func task)))
-   
-
-(defmacro for
-  "Chain multiple tasks together. Returns a new task that evaluates when all the
-  tasks are ready together. The task evaluates to `body`. Uses the executor bound to
-  [[*pool*]] by default."
-  [bindings & body]
-  `(for* ~`*pool* ~bindings ~@body))
-
-(defmacro for-in
-  "Chain multiple tasks together. Returns a new task that evaluates when all the
-  tasks are ready together. The task evaluates to `body`. Uses the `executor` executor."
-  [executor bindings & body]
-  `(for* ~executor ~bindings ~@body))
 
 (defmacro ^:no-doc for*
   [executor bindings & body]
+  {:pre [(vector? bindings) (even? (count bindings))]}
   (let [groups# (if (<= 2 (count bindings))
                   (partition 2 bindings)
                   bindings)
@@ -218,6 +206,18 @@ to the result of `body`.
                    ~fut#)
       `(then-in ~executor (fn [~sym#] ~@body) ~fut#))))
 
+(defmacro for
+  "Chain multiple tasks together. Returns a new task that evaluates when all the
+  tasks are ready together. The task evaluates to `body`. Uses the executor bound to
+  [[*pool*]] by default."
+  [bindings & body]
+  `(for* ~`*pool* ~bindings ~@body))
+
+(defmacro for-in
+  "Chain multiple tasks together. Returns a new task that evaluates when all the
+  tasks are ready together. The task evaluates to `body`. Uses the `executor` executor."
+  [executor bindings & body]
+  `(for* ~executor ~bindings ~@body))
 
 
 (defn void
@@ -251,3 +251,20 @@ to the result of `body`.
     (.completeExceptionally (task->future task) t)
     task))
 
+(defn traverse-in
+  "Like [[traverse]] but with explicit executor."
+  [executor xs f]
+  (reduce (fn [fr a]
+            (for-in executor
+                    [r fr
+                     b (f a)]
+                    (conj r b)))
+          (now [])
+          xs))
+
+(defn traverse
+  "Map over a sequence with a function that produces a task, and capture the result of the whole operation in a task.
+  Given `f` which is a function from something to a task, `traverse` produces a task that evaluates into a list as if
+  f were `map`d over it."
+  [xs f]
+  (traverse-in *pool* xs f))
