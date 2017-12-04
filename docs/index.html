@@ -711,7 +711,7 @@ evaluate its result in another thread.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>This task evaluates to 123. We can get it value by `deref`ing it.</p>
+<p>This task evaluates to 123. We can get it value by <code>deref</code> ing it.</p>
 </div>
 <div class="paragraph">
 <p>To get the value of the task, use <code>deref</code> or <code>@</code> from the Clojure
@@ -776,21 +776,15 @@ and the <a href="#execution-model">Execution model</a> for more information abou
 <h4 id="function-application-then"><a class="anchor" href="#function-application-then"></a><a class="link" href="#function-application-then">2.2.1. Function application: <code>then</code></a></h4>
 <div class="paragraph">
 <p>If you want to apply a function on the value returned by a task, use
-<code>then</code>:</p>
+<code>then</code>. <code>then</code> accepts a function and a task, produces another task, to get its
+result, you need to deref it:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="clojure"><span></span><span class="tok-p">(</span><span class="tok-nf">task/then</span> <span class="tok-nv">clojure.string/upper-case</span> <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-s">&quot;asdf&quot;</span><span class="tok-p">))</span>
-<span class="tok-c1">; =&gt; ASDF</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><code>then</code> produces another task, so you can deref its result:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="clojure"><span></span><span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">task/then</span> <span class="tok-nb">inc </span><span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-mi">123</span><span class="tok-p">))</span>
+<pre class="pygments highlight"><code data-lang="clojure"><span></span><span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">task/then</span> <span class="tok-nv">clojure.string/upper-case</span> <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-s">&quot;asdf&quot;</span><span class="tok-p">))</span>
+<span class="tok-c1">; =&gt; ASDF</span>
 
+<span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">task/then</span> <span class="tok-nb">inc </span><span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-mi">123</span><span class="tok-p">))</span>
 <span class="tok-c1">; =&gt; 124</span></code></pre>
 </div>
 </div>
@@ -808,7 +802,7 @@ and the <a href="#execution-model">Execution model</a> for more information abou
 </div>
 <div class="paragraph">
 <p>If you had used <code>then</code> the result would have been a task inside another
-task.</p>
+task, requiring a double deref.</p>
 </div>
 </div>
 </div>
@@ -1292,7 +1286,7 @@ to handle incoming requests and the web server will appear unresponsive!</p>
 <div id="footer">
 <div id="footer-text">
 Version 0.2.0<br>
-Last updated 2017-12-04 10:17:57 EET
+Last updated 2017-12-04 11:13:48 EET
 </div>
 </div>
 </body>
