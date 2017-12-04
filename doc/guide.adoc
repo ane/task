@@ -1,6 +1,6 @@
 = Task Manual
 Antoine Kalmbach <ane@iki.fi>
-v0.1.0
+v0.2.0
 :toc: left
 :numbered:
 :idseparator: -
@@ -106,7 +106,7 @@ You need Java 8 to use Task, because Task uses features that were introduced in 
 
 [source,clojure]
 ----
-[com.github.ane/task "0.1.0"]
+[com.github.ane/task "0.2.0"]
 ----
 
 to your Leiningen or Boot project dependency section.
@@ -246,12 +246,12 @@ use your own executor, there are two approaches:
   1. Use http://clojure.github.io/clojure/clojure.core-api.html#clojure.core/binding[dynamic binding] to set `\*pool*` to
 the executor of your choice.
   2. [[explicit-variants]]Use the explicit variants of the combinators which accept an executor as the third parameter. These are:
-     * https://ane.github.io/task/task.core.html#var-run-in[run-in]
-     * https://ane.github.io/task/task.core.html#var-then-in[sequence-in]
-     * https://ane.github.io/task/task.core.html#var-compose-in[compose-in]
-     * https://ane.github.io/task/task.core.html#var-for-in[for-in]
-     * https://ane.github.io/task/task.core.html#var-sequence-in[sequence-in]
-     * https://ane.github.io/task/task.core.html#var-traverse-in[traverse-in]
+     * https://ane.github.io/task/api/task.core.html#var-run-in[run-in]
+     * https://ane.github.io/task/api/task.core.html#var-then-in[sequence-in]
+     * https://ane.github.io/task/api/task.core.html#var-compose-in[compose-in]
+     * https://ane.github.io/task/api/task.core.html#var-for-in[for-in]
+     * https://ane.github.io/task/api/task.core.html#var-sequence-in[sequence-in]
+     * https://ane.github.io/task/api/task.core.html#var-traverse-in[traverse-in]
 
 ==== Using dynamic binding
 
@@ -276,16 +276,13 @@ https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.h
   (task/then-in inc (task/run-in 123 pool) pool))
 ----
 
-This approach can be used to define multiple thread pools and use them in the chain of a task execution.
+This approach can be used to define multiple thread pools and use them in the
+chain of a task execution, spreading execution across multiple executors. 
 
 [source,clojure]
 ----
 include::{sourcedir}/tutorial.clj[tag=multiple-executors,indent=0]
 ----
-
-NOTE: It is possible switch thread pools between calls to combinators. You may vary well
-define multiple executors and pass them to subsequent calls to the explicit combinator variants. This lets you spread
-the task execution into multiple executors, but you must be careful
 
 [[using-for-to-avoid-boilerplate]]
 ==== Using `for` to avoid boilerplate
