@@ -37,13 +37,24 @@
 (deftest then-tests
   (testing "basic application"
     (is (= 2 @(task/then inc (task/now 1)))))
-
   (testing "comp works"
-    (is (= 3 @(task/then (comp inc inc) (task/now 1))))))
+    (is (= 3 @(task/then (comp inc inc) (task/now 1)))))
+  (testing "basic application w/ executor"
+    (is (= 10 @(task/then-in task/*pool* inc (task/now 9))))))
 
 (deftest compose-tests
   (testing "basic application"
-    (is (= 2 @(task/compose #(task/run (inc %)) (task/now 1))))))
+    (is (= 2 @(task/compose #(task/run (inc %)) (task/now 1)))))
+  (testing "basic application with executor"
+    (is (= 4 @(task/compose-in task/*pool* #(task/run (* -2 %)) (task/now -2))))))
+
+(deftest arity-tests
+  (testing "arity-1 of then and compose"
+    (is (ifn? (task/then inc)))
+    (is (ifn? (task/compose (fn [x] (task/run (inc x)))))))
+  (testing "arity-2+ of then and compose"
+    (is (= [3 6] @(task/then inc (task/now 2) (future 5))))
+    (is (= [2 4] @(task/compose #(task/run (inc %)) (task/now 1) (future 3))))))
 
 (deftest for-tests
   (testing "for works"

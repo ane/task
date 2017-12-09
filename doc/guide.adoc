@@ -1,6 +1,6 @@
 = Task Manual
 Antoine Kalmbach <ane@iki.fi>
-v0.1.0
+v0.3.0
 :toc: left
 :numbered:
 :idseparator: -
@@ -185,7 +185,7 @@ and the <<execution-model>> for more information about executors.
 
 [[function-application-then]]
 
-==== Function application: `then`
+==== Function application: `then` and `compose`
 
 If you want to apply a function on the value returned by a task, use
 `then`:
@@ -205,6 +205,15 @@ If you want to apply a function on the value returned by a task, use
 ; => 124
 ----
 
+`then` supports multiple arity. If you pass more than one task you get a task
+that returns a vector of its results.
+
+[source,clojure]
+----
+@(task/then inc (task/run 2) (task/now 5))
+; => [3 6]
+----
+
 If you want to apply a function that produces another task, use
 `compose`:
 
@@ -219,6 +228,16 @@ If you want to apply a function that produces another task, use
 If you had used `then` the result would have been a task inside another
 task.
 
+Like `then`, compose also supports multiple arity. Pass more than one task,
+you get a vector of the function applied to every task. The vector task
+completes when all tasks complete.
+
+[source,clojure]
+----
+@(task/compose (fn [y] (task/run (inc y))) (task/now 9) (task/run 10))
+; => [10 11]
+----
+
 [[interoperability]]
 === Interoperability
 
@@ -226,11 +245,13 @@ Standard Clojure `future` and `promise` are compatible with tasks:
 
 [source,clojure]
 ----
-@(then inc (future 9)) ; => 10
+@(task/then inc (future 9)) ; => 10
+
+@(task/then inc (future 3) (task/now 4))) ; => [4 5]
 
 (def foo (promise))
 
-(then println foo)
+(task/then println foo)
 
 (deliver foo "hello")
 
@@ -246,12 +267,12 @@ use your own executor, there are two approaches:
   1. Use http://clojure.github.io/clojure/clojure.core-api.html#clojure.core/binding[dynamic binding] to set `\*pool*` to
 the executor of your choice.
   2. [[explicit-variants]]Use the explicit variants of the combinators which accept an executor as the third parameter. These are:
-     * https://ane.github.io/task/task.core.html#var-run-in[run-in]
-     * https://ane.github.io/task/task.core.html#var-then-in[sequence-in]
-     * https://ane.github.io/task/task.core.html#var-compose-in[compose-in]
-     * https://ane.github.io/task/task.core.html#var-for-in[for-in]
-     * https://ane.github.io/task/task.core.html#var-sequence-in[sequence-in]
-     * https://ane.github.io/task/task.core.html#var-traverse-in[traverse-in]
+     * https://ane.github.io/task/api/task.core.html#var-run-in[run-in]
+     * https://ane.github.io/task/api/task.core.html#var-then-in[sequence-in]
+     * https://ane.github.io/task/api/task.core.html#var-compose-in[compose-in]
+     * https://ane.github.io/task/api/task.core.html#var-for-in[for-in]
+     * https://ane.github.io/task/api/task.core.html#var-sequence-in[sequence-in]
+     * https://ane.github.io/task/api/task.core.html#var-traverse-in[traverse-in]
 
 ==== Using dynamic binding
 

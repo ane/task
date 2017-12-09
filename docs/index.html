@@ -495,7 +495,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="details">
 <span id="author" class="author">Antoine Kalmbach</span><br>
 <span id="email" class="email"><a href="mailto:ane@iki.fi">ane@iki.fi</a></span><br>
-<span id="revnumber">version 0.1.0</span>
+<span id="revnumber">version 0.3.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -765,7 +765,7 @@ and the <a href="#execution-model">Execution model</a> for more information abou
 <div class="sect2">
 <h3 id="composing-tasks"><a class="anchor" href="#composing-tasks"></a>2.2. Composing tasks</h3>
 <div class="sect3">
-<h4 id="function-application-then"><a class="anchor" href="#function-application-then"></a>2.2.1. Function application: <code>then</code></h4>
+<h4 id="function-application-then"><a class="anchor" href="#function-application-then"></a>2.2.1. Function application: <code>then</code> and <code>compose</code></h4>
 <div class="paragraph">
 <p>If you want to apply a function on the value returned by a task, use
 <code>then</code>:</p>
@@ -787,6 +787,16 @@ and the <a href="#execution-model">Execution model</a> for more information abou
 </div>
 </div>
 <div class="paragraph">
+<p><code>then</code> supports multiple arity. If you pass more than one task you get a task
+that returns a vector of its results.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">task/then</span> <span class="tok-nb">inc </span><span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-mi">2</span><span class="tok-p">)</span> <span class="tok-p">(</span><span class="tok-nf">task/now</span> <span class="tok-mi">5</span><span class="tok-p">))</span>
+<span class="tok-c1">; =&gt; [3 6]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>If you want to apply a function that produces another task, use
 <code>compose</code>:</p>
 </div>
@@ -802,6 +812,17 @@ and the <a href="#execution-model">Execution model</a> for more information abou
 <p>If you had used <code>then</code> the result would have been a task inside another
 task.</p>
 </div>
+<div class="paragraph">
+<p>Like <code>then</code>, compose also supports multiple arity. Pass more than one task,
+you get a vector of the function applied to every task. The vector task
+completes when all tasks complete.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">task/compose</span> <span class="tok-p">(</span><span class="tok-k">fn </span><span class="tok-p">[</span><span class="tok-nv">y</span><span class="tok-p">]</span> <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-p">(</span><span class="tok-nb">inc </span><span class="tok-nv">y</span><span class="tok-p">)))</span> <span class="tok-p">(</span><span class="tok-nf">task/now</span> <span class="tok-mi">9</span><span class="tok-p">)</span> <span class="tok-p">(</span><span class="tok-nf">task/run</span> <span class="tok-mi">10</span><span class="tok-p">))</span>
+<span class="tok-c1">; =&gt; [10 11]</span></code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -811,11 +832,13 @@ task.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">then</span> <span class="tok-nb">inc </span><span class="tok-p">(</span><span class="tok-nf">future</span> <span class="tok-mi">9</span><span class="tok-p">))</span> <span class="tok-c1">; =&gt; 10</span>
+<pre class="pygments highlight"><code data-lang="clojure"><span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">task/then</span> <span class="tok-nb">inc </span><span class="tok-p">(</span><span class="tok-nf">future</span> <span class="tok-mi">9</span><span class="tok-p">))</span> <span class="tok-c1">; =&gt; 10</span>
+
+<span class="tok-o">@</span><span class="tok-p">(</span><span class="tok-nf">task/then</span> <span class="tok-nb">inc </span><span class="tok-p">(</span><span class="tok-nf">future</span> <span class="tok-mi">3</span><span class="tok-p">)</span> <span class="tok-p">(</span><span class="tok-nf">task/now</span> <span class="tok-mi">4</span><span class="tok-p">)))</span> <span class="tok-c1">; =&gt; [4 5]</span>
 
 <span class="tok-p">(</span><span class="tok-k">def </span><span class="tok-nv">foo</span> <span class="tok-p">(</span><span class="tok-nf">promise</span><span class="tok-p">))</span>
 
-<span class="tok-p">(</span><span class="tok-nf">then</span> <span class="tok-nb">println </span><span class="tok-nv">foo</span><span class="tok-p">)</span>
+<span class="tok-p">(</span><span class="tok-nf">task/then</span> <span class="tok-nb">println </span><span class="tok-nv">foo</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nf">deliver</span> <span class="tok-nv">foo</span> <span class="tok-s">&quot;hello&quot;</span><span class="tok-p">)</span>
 
@@ -840,22 +863,22 @@ the executor of your choice.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://ane.github.io/task/task.core.html#var-run-in">run-in</a></p>
+<p><a href="https://ane.github.io/task/api/task.core.html#var-run-in">run-in</a></p>
 </li>
 <li>
-<p><a href="https://ane.github.io/task/task.core.html#var-then-in">sequence-in</a></p>
+<p><a href="https://ane.github.io/task/api/task.core.html#var-then-in">sequence-in</a></p>
 </li>
 <li>
-<p><a href="https://ane.github.io/task/task.core.html#var-compose-in">compose-in</a></p>
+<p><a href="https://ane.github.io/task/api/task.core.html#var-compose-in">compose-in</a></p>
 </li>
 <li>
-<p><a href="https://ane.github.io/task/task.core.html#var-for-in">for-in</a></p>
+<p><a href="https://ane.github.io/task/api/task.core.html#var-for-in">for-in</a></p>
 </li>
 <li>
-<p><a href="https://ane.github.io/task/task.core.html#var-sequence-in">sequence-in</a></p>
+<p><a href="https://ane.github.io/task/api/task.core.html#var-sequence-in">sequence-in</a></p>
 </li>
 <li>
-<p><a href="https://ane.github.io/task/task.core.html#var-traverse-in">traverse-in</a></p>
+<p><a href="https://ane.github.io/task/api/task.core.html#var-traverse-in">traverse-in</a></p>
 </li>
 </ul>
 </div>
@@ -1296,8 +1319,8 @@ to handle incoming requests and the web server will appear unresponsive!</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.1.0<br>
-Last updated 2017-12-03 20:23:36 EET
+Version 0.3.0<br>
+Last updated 2017-12-09 12:08:35 EET
 </div>
 </div>
 </body>

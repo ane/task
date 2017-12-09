@@ -6,7 +6,7 @@ Simple, functional and value-oriented concurrency primitives for Clojure.
   * [User Guide](https://ane.github.io/task/)
 
 ```clojure
-[com.github.ane/task "0.1.0-SNAPSHOT"]
+[com.github.ane/task "0.3.0"]
 ```
 
 ## Key features

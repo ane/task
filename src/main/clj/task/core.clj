@@ -82,7 +82,7 @@ or explicitly using an additional parameter.
     (failure      [this]            (when (failed? this)
                                       (let [fail (try @this (catch Exception e e))]
                                         (or (.getCause fail) fail))))
-    (fail!        [this throwable]      (.obtrudeException fut throwable))
+    (fail!        [this throwable]  (.obtrudeException fut throwable))
 
     clojure.lang.IBlockingDeref
     (deref [_ timeout-ms timeout-val]
@@ -145,12 +145,16 @@ to the result of `body`.
           (now (.get obj))
           (run (.get obj)))))
 
-
+(declare sequence sequence-in)
 (defn then-in
   "Like [[then]], but use the explicit executor given in `executor`."
-  [executor f task]
-  (future->task (.thenApplyAsync ((comp task->future ensure-task) task) (fn->Function f)
-                                 (or executor *pool*))))
+  ([executor f]
+   (fn [task] (then-in executor f task)))
+  ([executor f task]
+   (future->task (.thenApplyAsync ((comp task->future ensure-task) task) (fn->Function f)
+                                  (or executor *pool*))))
+  ([executor f task & more]
+   (sequence-in executor (map #(then-in executor f %) (into [task] more)))))
 
 (defn then
   "Apply a function to the result of `task`. Returns a new task.
@@ -158,19 +162,26 @@ to the result of `body`.
   With one argument, creates a function that accepts a task, and applies `func` on that task.
   
   With two arguments, applies `func` to `task`.
+  
+  With more than two arguments, returns a task of a vector with all the results of `func` applied to
+  the arguments. 
 
   By default, it uses the executor bound to [[*pool*]].
 
   See [[then-in]]."
   ([func] (fn [task] (then-in *pool* func task)))
-  ([func task] (then-in *pool* func task)))
+  ([func task] (then-in *pool* func task))
+  ([func task & more] (sequence (map #(then func %) (into [task] more)))))
 
 (defn compose-in
   "Like [[compose]], but use the explicit executor given in `executor`."
-  [executor f task]
-  (future->task (.thenComposeAsync ((comp task->future ensure-task) task)
-                                   (fn->Function (comp task->future ensure-task f))
-                                   executor)))
+  ([executor f] (fn [task] (compose-in executor f task)))
+  ([executor f task]
+   (future->task (.thenComposeAsync ((comp task->future ensure-task) task)
+                                    (fn->Function (comp task->future ensure-task f))
+                                    executor)))
+  ([executor f task & more]
+   (sequence-in executor (map #(compose-in executor f %) (into [task] more)))))
 
 (defn compose
   "Chain two tasks together. Applies `func`, which is a function returning a task,
@@ -180,13 +191,15 @@ to the result of `body`.
   otherwise result in a task inside a task.
 
   With one argument, create a function that accepts a task. With two args, apply `func` to
-  `task` directly.
+  `task` directly. With more than two args, return a task that completes with a list of `func` 
+  composed with the results.
 
   By default, it uses the executor bound to [[*pool*]].
 
   See also [[compose-in]]."
   ([func] (fn [task] (compose-in *pool* func task)))
-  ([func task] (compose-in *pool* func task)))
+  ([func task] (compose-in *pool* func task))
+  ([func task & more] (sequence (map #(compose func %) (into [task] more)))))
 
 (defmacro ^:no-doc for*
   [executor bindings & body]
@@ -221,7 +234,7 @@ to the result of `body`.
 
 
 (defn void
-  "Create an incomplete task with nothing in it."
+  "Create an incomplete task with nothing in it which will never complete."
   []
   (future->task (CompletableFuture.)))
 
