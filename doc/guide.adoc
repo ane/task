@@ -103,14 +103,7 @@ Head over to the link:./02-guide.md[User Guide] to learn more!
 
 === Installation & Requirements
 
-You need Java 8 to use Task, because Task uses features that were introduced in that version. To install Task, just add
-
-[source,clojure]
-----
-[com.github.ane/task "0.2.0"]
-----
-
-to your Leiningen or Boot project dependency section.
+You need Java 8 to use Task, because Task uses features that were introduced in that version.
 
 [[creating-tasks]]
 == User Guide
