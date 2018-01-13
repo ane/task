@@ -126,7 +126,7 @@ end up with nested tasks.
 
 ## License
 
-Copyright © 2017 Antoine Kalmbach. All rights reserved.
+Copyright © Antoine Kalmbach. All rights reserved.
 
 Distributed under the [Apache License](https://www.apache.org/licenses/LICENSE-2.0) either version 2.0 or (at
 your option) any later version.
