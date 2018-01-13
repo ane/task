@@ -82,37 +82,46 @@ the symbols in the bindings to futures. Once all futures are complete, it evalua
 ; => 10
 ```
 
-### A concrete example: do a HTTP request asynchronously and operate on its results
+### An example: HTTP requests
+
+In the example below, the promise returned by `http/get` is automatically converted into a task. The
+function then extracts the body, parses it into JSON, gets the title and uppercases it. This
+executes asynchronously in another thread, so we have to deref it to print its results The function
+then extracts the body, parses it into JSON, gets the title and uppercases it. This executes
+asynchronously in another thread, so we have to deref it to print its results.
 
 ``` clojure
-(ns my-program.core
-  (:require [org.httpkit.client :as http]
-            [task.core :as task]
-            [cheshire.core :as cheshire]))
-            
-; do a request - http-kit calls return promises, these are converted into tasks.
-(defn do-http-request-async
-  [data]
-  (task/then (http/post "http://host.com/api" (cheshire/generate-string data))
-              (comp :result cheshire/parse-string)))
+(def request
+  (task/then
+   (fn [data] (-> data
+                  :body
+                  (cheshire/parse-string true)
+                  :title
+                  str/upper-case))
+   (http/get "http://jsonplaceholder.typicode.com/posts/3")))
 
-; compute something expensive
-(defn compute-result
-  [v]
-  (task/run (Thread/sleep 1000)
-             (* v 1000)))
+(println @request)
+```
 
-; combine tasks
-(defn request-and-compute
-  [data]
-  (task/for [response  (do-http-request-async data)
-             computed  (compute-result response)
-             blah      (future 100)] ; interop!
+#### Using `compose` to get the result from a POST operation
 
-    (+ 100 computed blah)))
+Here we chain two HTTP requests together. First we POST to `api-url` with some example data, then
+we extract the `Location` header, and execute a GET request to that URL. By using compose we don't
+end up with nested tasks. 
 
-; blocks until it's ready
-@(request-and-compute {:some-value 1})
+``` clojure
+(defn post-and-fetch
+  [title content]
+  (task/compose
+   (fn [response]
+     (http/get (-> response :headers :location)))
+   (http/post api-url
+              {:body (cheshire/generate-string {:userId 123 :title title :body content})})))
+              
+@(post-and-fetch "Sample title" "Sample content!")
+
+;; => {:opts {...}, :body "this would be the result", :headers {...}, :status 200}
+
 ```
 
 ## License

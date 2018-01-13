@@ -7,6 +7,8 @@
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [com.github.ane/codox-kingfisher-theme "0.1.0"]]
+  :profiles {:dev {:dependencies [[http-kit "2.2.0"]
+                                  [cheshire "5.8.0"]]}}
   :source-paths ["src/main/clj"]
   :test-paths ["src/test/clj"]
   :deploy-repositories [["releases" :clojars]]

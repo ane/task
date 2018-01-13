@@ -64,15 +64,16 @@ this is what you need to do.
 
 [source,clojure]
 ----
-(def myreq 
+(def request
   (task/then
-    (fn [data] (->> data                          ;; <2>
-                    cheshire/parse-string         ;; <3>
-                    :my-interesting-attribute     ;; <3>
-                    clojure.string/upper-case))   ;; <3>
-    (http/get "http://some.api/endpoint"))        ;; <1>
+   (fn [data] (-> data                                        ;; <2>
+                  :body                                       ;; <3>
+                  (cheshire/parse-string true)                ;; <3>
+                  :title                                      ;; <3>
+                  str/upper-case))
+   (http/get "http://jsonplaceholder.typicode.com/posts/3"))) ;; <1>
 
-(println @myreq)                                  ;; <4>
+(println @request)                                            ;; <4>
 ----
 <1> We launch a HTTP GET request asynchronously using http://www.http-kit.org/[http-kit]. The 
     promise returned by it is converted into a task automatically.
