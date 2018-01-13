@@ -33,7 +33,7 @@ The task API is built on basic building blocks, `run`, `then`, `compose` and `fo
 Use the standard `deref`/`@` to block the current thread and await the result.
 
 ``` clojure
-(def my-var (run 123))
+(def my-var (task/run 123))
 
 @(my-var) ; => 123
 ```
@@ -43,10 +43,10 @@ Use the standard `deref`/`@` to block the current thread and await the result.
 `then` applies a function to the result of another task.
 
 ``` clojure
-(def async-var (run (Thread/sleep 1000)
+(def async-var (task/run (Thread/sleep 1000)
                     "asdf"))
                     
-@(then str/upper-case async-var)
+@(task/then str/upper-case async-var)
 ; => "ASDF"
 ```
 
@@ -56,14 +56,14 @@ Use the standard `deref`/`@` to block the current thread and await the result.
 
 ``` clojure
 (defn comp1 [x] 
-  (run (Thread/sleep 1000)
+  (task/run (Thread/sleep 1000)
        (inc x)))
 
 (defn comp2 [x]
-  (run (Thread/sleep 1000)
+  (task/run (Thread/sleep 1000)
        (* 2 x)))
        
-@(compose comp2 (comp1 4))
+@(task/compose comp2 (comp1 4))
 ; => 10
 ```
 
@@ -73,10 +73,10 @@ Use the standard `deref`/`@` to block the current thread and await the result.
 the symbols in the bindings to futures. Once all futures are complete, it evaluates the body.
 
 ``` clojure
-@(for [x (future 1)
-       y (run 2)
-       c (run (Thread/sleep 1000)
-              7)]
+@(task/for [x (future 1)
+            y (task/run 2)
+            c (task/run (Thread/sleep 1000)
+                        7)]
   (+ x y c))
   
 ; => 10
