@@ -86,9 +86,7 @@ the symbols in the bindings to futures. Once all futures are complete, it evalua
 
 In the example below, the promise returned by `http/get` is automatically converted into a task. The
 function then extracts the body, parses it into JSON, gets the title and uppercases it. This
-executes asynchronously in another thread, so we have to deref it to print its results The function
-then extracts the body, parses it into JSON, gets the title and uppercases it. This executes
-asynchronously in another thread, so we have to deref it to print its results.
+executes asynchronously in another thread, so we have to deref it to print its results.
 
 ``` clojure
 (def request
