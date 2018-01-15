@@ -124,6 +124,24 @@ end up with nested tasks.
 
 ```
 
+### Error handling
+
+*See [Error handling](https://ane.github.io/task/#recovering-from-errors) in the user guide*
+
+task provides advanced facilities for error handling. Currently the principal method is `recover`
+which accepts a task and a function. The function is passed any exception thrown from the task and
+then the value returned by the function. `recover` produces a new task:
+
+``` clojure
+(def boom (task/run (/ 1 0)))
+(def incremented (task/then inc boom))
+@(task/recover incremented
+          (fn [ex]
+            (println "caught exception: " (.getMessage ex))
+            123))
+;; => 123
+```
+
 ## License
 
 Copyright © Antoine Kalmbach. All rights reserved.
