@@ -1,4 +1,4 @@
-(ns task.core
+ (ns task.core
   "This namespace contains the core components of the task libary.
 
   For task creation, see [[run]].
@@ -146,41 +146,36 @@ to the result of `body`.
           (run (.get obj)))))
 
 (declare sequence sequence-in)
+
 (defn then-in
   "Like [[then]], but use the explicit executor given in `executor`."
-  ([executor f]
-   (fn [task] (then-in executor f task)))
-  ([executor f task]
+  ([executor task f]
    (future->task (.thenApplyAsync ((comp task->future ensure-task) task) (fn->Function f)
                                   (or executor *pool*))))
-  ([executor f task & more]
-   (sequence-in executor (map #(then-in executor f %) (into [task] more)))))
+  ([executor task f & more]
+   (let [init (then-in executor task f)]
+     (reduce (fn [p n] (then-in executor p n)) init (flatten more)))))
 
 (defn then
   "Apply a function to the result of `task`. Returns a new task.
 
-  With one argument, creates a function that accepts a task, and applies `func` on that task.
+  Applies `func` to `task`.
   
-  With two arguments, applies `func` to `task`.
-  
-  With more than two arguments, returns a task of a vector with all the results of `func` applied to
-  the arguments. 
+  With more than two arguments, returns a task with functions applied left-to-right.  
 
   By default, it uses the executor bound to [[*pool*]].
 
   See [[then-in]]."
-  ([func] (fn [task] (then-in *pool* func task)))
-  ([func task] (then-in *pool* func task))
-  ([func task & more] (sequence (map #(then func %) (into [task] more)))))
+  ([task func] (then-in *pool* task func))
+  ([task func & more] (then-in *pool* task func more)))
 
 (defn compose-in
   "Like [[compose]], but use the explicit executor given in `executor`."
-  ([executor f] (fn [task] (compose-in executor f task)))
-  ([executor f task]
+  ([executor task f]
    (future->task (.thenComposeAsync ((comp task->future ensure-task) task)
                                     (fn->Function (comp task->future ensure-task f))
                                     executor)))
-  ([executor f task & more]
+  ([executor task f & more]
    (sequence-in executor (map #(compose-in executor f %) (into [task] more)))))
 
 (defn compose
@@ -190,16 +185,14 @@ to the result of `body`.
   Should be used when the function to [[then]] returns a task, which would
   otherwise result in a task inside a task.
 
-  With one argument, create a function that accepts a task. With two args, apply `func` to
-  `task` directly. With more than two args, return a task that completes with a list of `func` 
+  With more than two args, return a task that completes with a list of `func` 
   composed with the results.
 
   By default, it uses the executor bound to [[*pool*]].
 
   See also [[compose-in]]."
-  ([func] (fn [task] (compose-in *pool* func task)))
-  ([func task] (compose-in *pool* func task))
-  ([func task & more] (sequence (map #(compose func %) (into [task] more)))))
+  ([task func] (compose-in *pool* func task))
+  ([task func & more] (sequence (map #(compose func %) (into [task] more)))))
 
 (defmacro ^:no-doc for*
   [executor bindings & body]
@@ -211,13 +204,13 @@ to the result of `body`.
         [[sym# fut#] & _] groups#]
     (if rest#
       `(compose-in ~executor
+                   ~fut#
                    (fn [~sym#]
                      ~(if (next rest#)
                         `(for* ~executor [~@(mapcat identity rest#)] ~@body)
                         (let [[[tsym# tfut#]] (or rest# groups#)]
-                          `(then-in ~executor (fn [~tsym#] ~@body) ~tfut#))))
-                   ~fut#)
-      `(then-in ~executor (fn [~sym#] ~@body) ~fut#))))
+                          `(then-in ~executor ~tfut# (fn [~tsym#] ~@body))))))
+      `(then-in ~executor ~fut# (fn [~sym#] ~@body)))))
 
 (defmacro for
   "Chain multiple tasks together. Returns a new task that evaluates when all the
