@@ -5,10 +5,6 @@ Simple, functional and value-oriented concurrency primitives for Clojure.
   * [API Documentation](https://ane.github.io/task/api/)
   * [User Guide](https://ane.github.io/task/)
 
-```clojure
-[com.github.ane/task "0.3.0"]
-```
-
 ## Key features
 
   * **Value-oriented**: tasks are just eventual values. No more callbacks, regular `deref`/`@` is all you need. 
