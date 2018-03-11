@@ -28,7 +28,7 @@ or explicitly using an additional parameter.
 
   For more information see the documentation about the [execution model](./03-executors.md).
   "
-  (:refer-clojure :exclude [for sequence] :as core)
+  (:refer-clojure :exclude [for sequence])
   (:import [java.util.concurrent CompletableFuture Executor ForkJoinPool TimeoutException TimeUnit Executors]))
 
 ; boring Java FunctionalInterface crap
