@@ -5,10 +5,6 @@ Simple, functional and value-oriented concurrency primitives for Clojure.
   * [API Documentation](https://ane.github.io/task/api/)
   * [User Guide](https://ane.github.io/task/)
 
-```clojure
-[com.github.ane/task "0.3.0"]
-```
-
 ## Key features
 
   * **Value-oriented**: tasks are just eventual values. No more callbacks, regular `deref`/`@` is all you need. 
@@ -86,9 +82,7 @@ the symbols in the bindings to futures. Once all futures are complete, it evalua
 
 In the example below, the promise returned by `http/get` is automatically converted into a task. The
 function then extracts the body, parses it into JSON, gets the title and uppercases it. This
-executes asynchronously in another thread, so we have to deref it to print its results The function
-then extracts the body, parses it into JSON, gets the title and uppercases it. This executes
-asynchronously in another thread, so we have to deref it to print its results.
+executes asynchronously in another thread, so we have to deref it to print its results.
 
 ``` clojure
 (def request
