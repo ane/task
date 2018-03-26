@@ -28,7 +28,7 @@ or explicitly using an additional parameter.
 
   For more information see the documentation about the [execution model](./03-executors.md).
   "
-  (:refer-clojure :exclude [for sequence])
+  (:refer-clojure :exclude [for sequence eval])
   (:import [java.util.concurrent CompletableFuture Executor ForkJoinPool TimeoutException TimeUnit Executors]))
 
 ; boring Java FunctionalInterface crap
@@ -276,24 +276,24 @@ to the result of `body`.
   (traverse-in *pool* xs f))
 
 (defprotocol Async
-  (shift [this] "Run this task asynchronously."))
-
-(defmacro defer
-  [& body]
-  `(fn [fut#] (then-in ~'*pool* fut# (fn [any#] ~@body))))
+  (shift [this] "Run this task asynchronously.")
+  (handle [this] "Return the handle to the underlying future."))
 
 (defmacro once
   [& body]
   `(let [incomplete# (CompletableFuture.)
          ex# (then-in ~'*pool* incomplete# (fn [any#] ~@body))]
-     (reify Async
+     (reify
+       Async
        (shift [this]
-         (.complete incomplete# nil) ex#))))
+         (.complete incomplete# nil) ex#)
+       (handle [this] ex#))))
 
-(defmacro later
+(defmacro eval
   [& body]
-  `(let [fut# (defer ~@body)]
+  `(let [fut# (fn [ff#] (then-in ~'*pool* ff# (fn [any#] ~@body)))]
     (reify Async
       (shift [this]
         (let [anchor# (CompletableFuture/completedFuture nil)]
-          (fut# anchor#))))))
+          (fut# anchor#)))
+      (handle [this] (fut# (CompletableFuture.))))))
