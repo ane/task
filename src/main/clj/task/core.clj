@@ -274,3 +274,26 @@ to the result of `body`.
   f were `map`d over it."
   [xs f]
   (traverse-in *pool* xs f))
+
+(defprotocol Async
+  (shift [this] "Run this task asynchronously."))
+
+(defmacro defer
+  [& body]
+  `(fn [fut#] (then-in ~'*pool* fut# (fn [any#] ~@body))))
+
+(defmacro once
+  [& body]
+  `(let [incomplete# (CompletableFuture.)
+         ex# (then-in ~'*pool* incomplete# (fn [any#] ~@body))]
+     (reify Async
+       (shift [this]
+         (.complete incomplete# nil) ex#))))
+
+(defmacro later
+  [& body]
+  `(let [fut# (defer ~@body)]
+    (reify Async
+      (shift [this]
+        (let [anchor# (CompletableFuture/completedFuture nil)]
+          (fut# anchor#))))))
